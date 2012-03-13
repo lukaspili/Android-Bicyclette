@@ -6,6 +6,8 @@
 bin/
 gen/
 local.properties
+project.properties
+
 
 # Intellij
 *.iml
