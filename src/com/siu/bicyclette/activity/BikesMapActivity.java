@@ -48,7 +48,6 @@ public class BikesMapActivity extends SherlockMapActivity {
         initActionBar();
         initLocation();
         initMap();
-
     }
 
     @Override

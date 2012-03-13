@@ -4,4 +4,7 @@
 
     <string name="map_error_getcurrentlocation">Impossible de localiser votre position</string>
     <string name="map_error_getlocation">Impossible de localiser la position "%1$s".</string>
+
+    <string name="search_label">Search label</string>
+    <string name="search_hint">Search hint</string>
 </resources>
