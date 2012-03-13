@@ -1,4 +1,8 @@
+Android Bicyclette
+==================
+
 Configure additional libraries
+------------------------------
 
 Action Bar Sherlock :
 
