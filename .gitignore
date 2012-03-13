@@ -1,0 +1,41 @@
+# Android
+*.apk
+*.ap_
+*.dex
+*.class
+bin/
+gen/
+local.properties
+
+# Intellij
+*.iml
+*.ipr
+*.iws
+.idea/
+out/
+
+# Eclipse
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+.externalToolBuilders/
+*.launch
+.cproject
+.buildpath
+
+# OSX
+.DS_Store
+.Spotlight-V100
+.Trashes
+
