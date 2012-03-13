@@ -158,15 +158,18 @@ public class BikesMapActivity extends SherlockMapActivity {
             }
 
             @Override
+            public void onStop() {
+                setSupportProgressBarIndeterminateVisibility(false);
+            }
+
+            @Override
             public void onSuccess(GeoPoint geoPoint) {
-                // don't hide the progess bar because the position location will show it again
                 locatePositionOnMap(geoPoint);
             }
 
             @Override
             public void onFailure(String name) {
                 new AppToast(BikesMapActivity.this, String.format(getString(R.string.map_error_getlocation), name)).show();
-                setSupportProgressBarIndeterminateVisibility(false);
             }
         };
     }

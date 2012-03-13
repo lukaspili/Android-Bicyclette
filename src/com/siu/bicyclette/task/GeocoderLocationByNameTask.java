@@ -64,10 +64,11 @@ public class GeocoderLocationByNameTask extends AsyncTask<String, Void, GeoPoint
 
         if (null == geoPoint) {
             listener.onFailure(name);
-            return;
+        } else {
+            listener.onSuccess(geoPoint);
         }
 
-        listener.onSuccess(geoPoint);
+        listener.onStop();
     }
 
     public String getName() {
@@ -77,6 +78,8 @@ public class GeocoderLocationByNameTask extends AsyncTask<String, Void, GeoPoint
     public interface Listener {
 
         void onStart();
+
+        void onStop();
 
         void onSuccess(GeoPoint geoPoint);
 
