@@ -2,6 +2,7 @@ package com.siu.bicyclette.map;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -53,10 +54,15 @@ public class EnhancedMapView extends MapView {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        // Set touch internal
+
         mIsTouched = (ev.getAction() != MotionEvent.ACTION_UP);
 
-        return super.onTouchEvent(ev);
+        try {
+            return super.onTouchEvent(ev);
+        } catch (Exception e) {
+            Log.wtf(getClass().getName(), "onTouchEvent exception ?!", e);
+            return false;
+        }
     }
 
     @Override
