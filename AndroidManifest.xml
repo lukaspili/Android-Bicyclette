@@ -32,6 +32,8 @@
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"/>
         </activity>
 
+        <service android:name=".service.BikeService" />
+
         <provider android:name="com.siu.bicyclette.provider.GeocodeContentProvider" android:authorities="com.siu.bicyclette.provider.geocodecontentprovider"/>
 
         <uses-library android:required="true" android:name="com.google.android.maps"/>

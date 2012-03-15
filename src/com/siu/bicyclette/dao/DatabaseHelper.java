@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,29 +19,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     //The Android's default system path of your application database.
     private static String DB_PATH = "/data/data/com.siu.bicyclette/databases/";
-
     private static String DB_NAME = "stations.sqlite";
 
     private SQLiteDatabase myDataBase;
-
     private final Context myContext;
 
-    /**
-     * Constructor
-     * Takes and keeps a reference of the passed context in order to access to the application assets and resources.
-     *
-     * @param context
-     */
+
     public DatabaseHelper(Context context) {
 
-        super(context, DB_NAME, null, 1);
+        super(context, DB_NAME, null, 6);
         this.myContext = context;
     }
 
-    /**
-     * Creates a empty database on the system and rewrites it with your own database.
-     */
-    public void createDataBase() throws IOException {
+    public synchronized void createDataBase() throws IOException {
 
         boolean dbExist = checkDataBase();
 
@@ -76,9 +67,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String myPath = DB_PATH + DB_NAME;
             checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
 
-        } catch (SQLiteException e) {
+        } catch (Exception e) {
             //database does't exist yet.
-
+            e.printStackTrace();
         }
 
         if (checkDB != null) {
@@ -88,13 +79,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return checkDB != null ? true : false;
     }
 
+    @Override
+    public synchronized void close() {
+
+        if (myDataBase != null)
+            myDataBase.close();
+
+        super.close();
+
+    }
+
     /**
      * Copies your database from your local assets-folder to the just created empty database in the
      * system folder, from where it can be accessed and handled.
      * This is done by transfering bytestream.
      */
     private void copyDataBase() throws IOException {
-
+        Log.d(getClass().getName(), "Copy database");
         //Open your local db as the input stream
         InputStream myInput = myContext.getAssets().open(DB_NAME);
 
@@ -118,33 +119,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void openDataBase() throws SQLException {
-
-        //Open the database
-        String myPath = DB_PATH + DB_NAME;
-        myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-
-    }
-
-    @Override
-    public synchronized void close() {
-
-        if (myDataBase != null)
-            myDataBase.close();
-
-        super.close();
-
-    }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        try {
+            createDataBase();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+       myContext.deleteDatabase(DB_NAME);
+       onCreate(db);
     }
-
 
 }

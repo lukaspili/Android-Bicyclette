@@ -15,6 +15,7 @@ import com.siu.bicyclette.R;
 import com.siu.bicyclette.helper.LocationHelper;
 import com.siu.bicyclette.map.EnhancedMapView;
 import com.siu.bicyclette.map.ItemizedOverlay;
+import com.siu.bicyclette.service.BikeService;
 import com.siu.bicyclette.service.GeocoderService;
 import com.siu.bicyclette.service.LocationService;
 import com.siu.bicyclette.task.GeocoderLocationByNameTask;
@@ -54,6 +55,7 @@ public class BikesMapActivity extends SherlockMapActivity {
     protected void onStart() {
         super.onStart();
         locationService.startCurrentLocation(locationResultListener);
+        startService(new Intent(this, BikeService.class));
     }
 
     @Override
