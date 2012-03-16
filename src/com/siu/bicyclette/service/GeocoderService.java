@@ -3,7 +3,7 @@ package com.siu.bicyclette.service;
 import android.location.Geocoder;
 import android.util.Log;
 import com.siu.bicyclette.Application;
-import com.siu.bicyclette.task.GeocoderLocationByNameTask;
+import com.siu.bicyclette.app.task.GeocoderLocationByNameTask;
 
 import java.util.Locale;
 

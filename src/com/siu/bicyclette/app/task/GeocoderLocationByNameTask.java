@@ -1,11 +1,11 @@
-package com.siu.bicyclette.task;
+package com.siu.bicyclette.app.task;
 
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.google.android.maps.GeoPoint;
-import com.siu.bicyclette.helper.LocationHelper;
+import com.siu.bicyclette.util.LocationUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class GeocoderLocationByNameTask extends AsyncTask<String, Void, GeoPoint
 
         Address address = addresses.get(0);
 
-        return LocationHelper.getGeoPoint(address.getLatitude(), address.getLongitude());
+        return LocationUtils.getGeoPoint(address.getLatitude(), address.getLongitude());
     }
 
     @Override

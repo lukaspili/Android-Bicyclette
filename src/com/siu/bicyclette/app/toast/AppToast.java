@@ -1,4 +1,4 @@
-package com.siu.bicyclette.toast;
+package com.siu.bicyclette.app.toast;
 
 import android.content.Context;
 import android.view.Gravity;

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import com.siu.bicyclette.model.Station;
 import com.siu.bicyclette.model.StationStatus;
 
 import java.util.List;
@@ -20,29 +21,33 @@ public class StationDao {
     private SQLiteDatabase db;
     private DatabaseHelper helper;
 
-    public StationDao(Context context){
+    public StationDao(Context context) {
         helper = new DatabaseHelper(context);
     }
 
-    public SQLiteDatabase open(){
-        if(db == null || !db.isOpen()){
+    public SQLiteDatabase open() {
+        if (db == null || !db.isOpen()) {
             db = helper.getWritableDatabase();
         }
         return db;
     }
 
-    public void close(){
+    public void close() {
         db.close();
     }
 
-    public void updateStationsStatus(List<StationStatus> stationsStatus){
-        for (StationStatus stationStatus : stationsStatus)
-        {
+    public void updateStationsStatus(List<StationStatus> stationsStatus) {
+        for (StationStatus stationStatus : stationsStatus) {
             ContentValues cv = new ContentValues();
             cv.put("free", stationStatus.getPlaces());
             cv.put("available", stationStatus.getBikes());
-            db.update("velibs", cv, "_id=?", new String[]{ String.valueOf(stationStatus.getId()) });
+            db.update("velibs", cv, "_id=?", new String[]{String.valueOf(stationStatus.getId())});
         }
+    }
+
+    public List<Station> getStations() {
+
+
     }
 
 }

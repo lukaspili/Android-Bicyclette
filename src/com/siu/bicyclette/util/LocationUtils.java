@@ -1,4 +1,4 @@
-package com.siu.bicyclette.helper;
+package com.siu.bicyclette.util;
 
 import android.location.Location;
 import android.util.Log;
@@ -7,7 +7,7 @@ import com.google.android.maps.GeoPoint;
 /**
  * @author Lukasz Piliszczuk <lukasz.pili AT gmail.com>
  */
-public final class LocationHelper {
+public final class LocationUtils {
 
     private static final double PARIS_LATITUDE = 48.856614;
     private static final double PARIS_LONGITUDE = 2.352222;
@@ -15,7 +15,7 @@ public final class LocationHelper {
     private static final int FRANCE_LATITUDE_E6 = 46227638;
     private static final int FRANCE_LONGITUDE_E6 = 2213749;
 
-    private LocationHelper() {
+    private LocationUtils() {
     }
 
     public static GeoPoint getGeoPoint(String latitudeAsString, String longitudeAsString) {
@@ -26,7 +26,7 @@ public final class LocationHelper {
             latitude = Double.valueOf(latitudeAsString);
             longitude = Double.valueOf(longitudeAsString);
         } catch (NumberFormatException e) {
-            Log.w(LocationHelper.class.getName(), "Cannot cast latitude " + latitudeAsString + " or longiture " + longitudeAsString + " to double values", e);
+            Log.w(LocationUtils.class.getName(), "Cannot cast latitude " + latitudeAsString + " or longiture " + longitudeAsString + " to double values", e);
             return null;
         }
 

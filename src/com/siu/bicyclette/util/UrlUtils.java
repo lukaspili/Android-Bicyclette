@@ -1,4 +1,4 @@
-package com.siu.bicyclette.helper;
+package com.siu.bicyclette.util;
 
 import android.util.Log;
 
@@ -8,9 +8,9 @@ import java.net.URL;
 /**
  * @author Lukasz Piliszczuk <lukasz.pili AT gmail.com>
  */
-public final class UrlHelper {
+public final class UrlUtils {
 
-    private UrlHelper() {
+    private UrlUtils() {
     }
 
     public static URL getUrl(String urlAsString) {
@@ -19,7 +19,7 @@ public final class UrlHelper {
         try {
             url = new URL(urlAsString);
         } catch (MalformedURLException e) {
-            Log.w(UrlHelper.class.getName(), "Invalid format for url : " + urlAsString, e);
+            Log.w(UrlUtils.class.getName(), "Invalid format for url : " + urlAsString, e);
             return null;
         }
 

@@ -1,4 +1,4 @@
-package com.siu.bicyclette.provider;
+package com.siu.bicyclette.app.provider;
 
 import android.app.SearchManager;
 import android.content.ContentProvider;

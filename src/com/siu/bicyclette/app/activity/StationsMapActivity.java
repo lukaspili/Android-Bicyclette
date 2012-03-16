@@ -1,4 +1,4 @@
-package com.siu.bicyclette.activity;
+package com.siu.bicyclette.app.activity;
 
 import android.app.SearchManager;
 import android.content.Intent;
@@ -12,19 +12,19 @@ import com.actionbarsherlock.view.Window;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 import com.siu.bicyclette.R;
-import com.siu.bicyclette.helper.LocationHelper;
-import com.siu.bicyclette.map.EnhancedMapView;
-import com.siu.bicyclette.map.ItemizedOverlay;
-import com.siu.bicyclette.service.BikeService;
+import com.siu.bicyclette.app.map.EnhancedMapView;
+import com.siu.bicyclette.app.map.ItemizedOverlay;
+import com.siu.bicyclette.app.task.GeocoderLocationByNameTask;
+import com.siu.bicyclette.app.toast.AppToast;
+import com.siu.bicyclette.dao.DatabaseHelper;
 import com.siu.bicyclette.service.GeocoderService;
 import com.siu.bicyclette.service.LocationService;
-import com.siu.bicyclette.task.GeocoderLocationByNameTask;
-import com.siu.bicyclette.toast.AppToast;
+import com.siu.bicyclette.util.LocationUtils;
 
 /**
  * @author Lukasz Piliszczuk <lukasz.pili AT gmail.com>
  */
-public class BikesMapActivity extends SherlockMapActivity {
+public class StationsMapActivity extends SherlockMapActivity {
 
     private EnhancedMapView mapView;
 
@@ -35,6 +35,7 @@ public class BikesMapActivity extends SherlockMapActivity {
     private GeocoderLocationByNameTask.Listener geocoderLocationByNameTaskListener;
 
     private ItemizedOverlay positionItemizedOverlay;
+    private ItemizedOverlay stationOverlay;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -42,20 +43,21 @@ public class BikesMapActivity extends SherlockMapActivity {
 
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
-        setContentView(R.layout.bikes_map_activity);
+        setContentView(R.layout.stations_map_activity);
 
         mapView = (EnhancedMapView) findViewById(R.id.map);
 
         initActionBar();
         initLocation();
         initMap();
+        initDatabase();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         locationService.startCurrentLocation(locationResultListener);
-        startService(new Intent(this, BikeService.class));
+//        startService(new Intent(this, StationStatusLoaderService.class));
     }
 
     @Override
@@ -132,12 +134,12 @@ public class BikesMapActivity extends SherlockMapActivity {
 
             @Override
             public void onLocationSuccess(Location location) {
-                locatePositionOnMap(LocationHelper.getGeoPoint(location));
+                locatePositionOnMap(LocationUtils.getGeoPoint(location));
             }
 
             @Override
             public void onLocationFailure() {
-                new AppToast(BikesMapActivity.this, R.string.map_error_getcurrentlocation).show();
+                new AppToast(StationsMapActivity.this, R.string.map_error_getcurrentlocation).show();
             }
 
             @Override
@@ -171,7 +173,7 @@ public class BikesMapActivity extends SherlockMapActivity {
 
             @Override
             public void onFailure(String name) {
-                new AppToast(BikesMapActivity.this, String.format(getString(R.string.map_error_getlocation), name)).show();
+                new AppToast(StationsMapActivity.this, String.format(getString(R.string.map_error_getlocation), name)).show();
             }
         };
     }
@@ -180,7 +182,7 @@ public class BikesMapActivity extends SherlockMapActivity {
 
         mapView.setBuiltInZoomControls(true);
         mapView.getController().setZoom(6);
-        mapView.getController().setCenter(LocationHelper.getFranceGeoPoint());
+        mapView.getController().setCenter(LocationUtils.getFranceGeoPoint());
 
         mapView.setOnChangeListener(new EnhancedMapView.OnChangeListener() {
 
@@ -208,8 +210,15 @@ public class BikesMapActivity extends SherlockMapActivity {
         });
 
         positionItemizedOverlay = new ItemizedOverlay(getResources().getDrawable(R.drawable.ic_maps_pin));
+        stationOverlay = new ItemizedOverlay(getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
 
         mapView.getOverlays().add(positionItemizedOverlay);
+    }
+
+    private void initDatabase() {
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(this);
+        databaseHelper.createDatabaseIfNotExists();
     }
 
     private void locatePositionOnMap(GeoPoint geoPoint) {

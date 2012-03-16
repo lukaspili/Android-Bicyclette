@@ -1,4 +1,4 @@
-package com.siu.bicyclette.map;
+package com.siu.bicyclette.app.map;
 
 import android.graphics.drawable.Drawable;
 import com.google.android.maps.OverlayItem;

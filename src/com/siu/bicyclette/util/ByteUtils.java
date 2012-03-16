@@ -1,11 +1,11 @@
-package com.siu.bicyclette.helper;
+package com.siu.bicyclette.util;
 
 /**
  * @author Lukasz Piliszczuk <lukasz.pili AT gmail.com>
  */
-public final class ByteHelper {
+public final class ByteUtils {
 
-    private ByteHelper() {
+    private ByteUtils() {
     }
 
     public static final int unsignedShortToInt(byte[] b, int index) {

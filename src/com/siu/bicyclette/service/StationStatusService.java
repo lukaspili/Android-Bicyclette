@@ -1,14 +1,12 @@
-package com.siu.bicyclette.ws;
+package com.siu.bicyclette.service;
 
 import android.util.Log;
-import com.siu.bicyclette.helper.ByteHelper;
-import com.siu.bicyclette.helper.UrlHelper;
+import com.siu.bicyclette.util.ByteUtils;
+import com.siu.bicyclette.util.UrlUtils;
 import com.siu.bicyclette.model.StationStatus;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,14 +15,14 @@ import java.util.List;
 /**
  * @author Lukasz Piliszczuk <lukasz.pili AT gmail.com>
  */
-public class StationStatusWS {
+public class StationStatusService {
 
     private static final String URL = "http://bicyclette.indri.fr/api";
     private static final int SIZE = 4 * 1201;
 
     public List<StationStatus> getStationsStatus() {
 
-        URL url = UrlHelper.getUrl(URL);
+        URL url = UrlUtils.getUrl(URL);
 
         byte[] bytes = new byte[SIZE];
 
@@ -68,7 +66,7 @@ public class StationStatusWS {
 
         for (int i = 0; i < bytes.length; i = i + 4) {
             try {
-                stationStatuses.add(new StationStatus(ByteHelper.unsignedShortToInt(bytes, i), bytes[i + 2], bytes[i + 3]));
+                stationStatuses.add(new StationStatus(ByteUtils.unsignedShortToInt(bytes, i), bytes[i + 2], bytes[i + 3]));
             } catch (ArrayIndexOutOfBoundsException e) {
                 Log.w(getClass().getName(), "Error getting station status", e);
                 continue;
