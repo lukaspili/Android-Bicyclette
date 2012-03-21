@@ -18,6 +18,15 @@ public final class LocationUtils {
     private LocationUtils() {
     }
 
+    public static Location getLocation(GeoPoint geoPoint) {
+
+        Location location = new Location("");
+        location.setLatitude(geoPoint.getLatitudeE6() / 1E6);
+        location.setLongitude(geoPoint.getLongitudeE6() / 1E6);
+
+        return location;
+    }
+
     public static GeoPoint getGeoPoint(String latitudeAsString, String longitudeAsString) {
 
         double latitude, longitude;

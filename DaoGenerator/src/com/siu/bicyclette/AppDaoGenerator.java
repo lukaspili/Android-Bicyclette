@@ -10,35 +10,53 @@ import de.greenrobot.daogenerator.Schema;
 public class AppDaoGenerator {
 
     public static void main(String[] args) throws Exception {
-        Schema schema = new Schema(1, "com.siu.bicyclette");
+
+        Schema schema = new Schema(2, "com.siu.bicyclette");
+        schema.enableKeepSectionsByDefault();
 
         addStation(schema);
+        addCity(schema);
 
         new DaoGenerator().generateAll(schema, "./src-gen");
     }
 
     private static void addStation(Schema schema) {
 
-        Entity note = schema.addEntity("Note");
+        Entity station = schema.addEntity("Station");
+        station.implementsInterface("Parcelable");
+        station.setTableName("stations");
 
-        note.addIdProperty().columnName("_id");
+        station.addIdProperty().columnName("_id");
 
-        note.addStringProperty("name");
-        note.addStringProperty("address");
+        station.addStringProperty("name").columnName("name");
+        station.addStringProperty("address").columnName("address");
+        station.addStringProperty("city").columnName("city");
 
-        note.addDoubleProperty("lat");
-        note.addDoubleProperty("long");
+        station.addDoubleProperty("coordLat").columnName("lat");
+        station.addDoubleProperty("coordLong").columnName("long");
 
-        note.addIntProperty("total");
-        note.addIntProperty("free");
-        note.addIntProperty("available");
+        station.addIntProperty("total").columnName("total");
+        station.addIntProperty("free").columnName("free");
+        station.addIntProperty("available").columnName("available");
 
-        note.addDateProperty("datetime");
+        station.addDateProperty("datetime").columnName("datetime");
 
-        note.addBooleanProperty("open");
-        note.addBooleanProperty("bonus");
-        note.addBooleanProperty("fav");
-        note.addBooleanProperty("notif");
+        station.addBooleanProperty("open").columnName("open");
+        station.addBooleanProperty("bonus").columnName("bonus");
+    }
+
+    private static void addCity(Schema schema) {
+
+        Entity entity = schema.addEntity("City");
+        entity.implementsInterface("Parcelable");
+        entity.setTableName("cities");
+
+        entity.addIdProperty().columnName("_id");
+
+        entity.addStringProperty("name");
+
+        entity.addDoubleProperty("coordLat");
+        entity.addDoubleProperty("coordLong");
     }
 
 }

@@ -5,6 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.siu.bicyclette.Application;
+import com.siu.bicyclette.DaoMaster;
+import com.siu.bicyclette.DaoSession;
+import com.siu.bicyclette.StationDao;
 
 import java.io.*;
 
@@ -16,28 +19,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static String DB_PATH = "/data/data/" + Application.getAppContext().getPackageName() + "/databases/";
     private static String DB_NAME = "stations.sqlite";
 
+    private static DatabaseHelper instance;
+
     private Context context;
 
-    public DatabaseHelper(Context context) {
+    private SQLiteDatabase database;
+
+    private DaoMaster daoMaster;
+
+    private DaoSession daoSession;
+
+    private Boolean databaseExists;
+
+    private DatabaseHelper(Context context) {
         super(context, DB_NAME, null, 6);
         this.context = context;
-    }
-
-    public boolean isDatabaseExists() {
-        File file = new File(DB_PATH + DB_NAME);
-        return file.exists();
     }
 
     public boolean createDatabaseIfNotExists() {
 
         context.deleteDatabase(DB_NAME);
 
-        if (isDatabaseExists()) {
+        // check if database exists only once
+        if (null == databaseExists) {
+            File file = new File(DB_PATH + DB_NAME);
+            databaseExists = file.exists();
+        }
+
+        if (databaseExists) {
             return true;
         }
 
         SQLiteDatabase database = getWritableDatabase();
         database.close();
+
+        databaseExists = true;
 
         return copyDataBase();
     }
@@ -95,6 +111,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+    }
+
+    public static DatabaseHelper getInstance() {
+
+        if (null == instance) {
+            instance = new DatabaseHelper(Application.getAppContext());
+        }
+
+        return instance;
+    }
+
+    public SQLiteDatabase getDatabase() {
+
+        if (null == database) {
+            createDatabaseIfNotExists();
+            database = getWritableDatabase();
+        }
+
+        return database;
+    }
+
+    public DaoMaster getDaoMaster() {
+
+        if (null == daoMaster) {
+            daoMaster = new DaoMaster(getDatabase());
+        }
+
+        return daoMaster;
+    }
+
+    public DaoSession getDaoSession() {
+
+        if (null == daoSession) {
+            daoSession = getDaoMaster().newSession();
+        }
+
+        return daoSession;
     }
 
 }

@@ -32,7 +32,9 @@
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"/>
         </activity>
 
-        <service android:name=".app.service.StationStatusLoaderService" />
+        <service android:name=".service.StationStatusService$StationStatusUpdateService"/>
+        <service android:name=".service.CityGetByLocationService"/>
+        <service android:name=".service.StationsGetByCityService"/>
 
         <provider android:name=".app.provider.GeocodeContentProvider" android:authorities="com.siu.bicyclette.app.provider.geocodecontentprovider"/>
 

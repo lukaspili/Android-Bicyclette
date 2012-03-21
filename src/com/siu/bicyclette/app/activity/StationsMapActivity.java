@@ -1,9 +1,14 @@
 package com.siu.bicyclette.app.activity;
 
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.Menu;
@@ -11,15 +16,19 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
+import com.siu.bicyclette.City;
 import com.siu.bicyclette.R;
+import com.siu.bicyclette.Station;
 import com.siu.bicyclette.app.map.EnhancedMapView;
 import com.siu.bicyclette.app.map.ItemizedOverlay;
 import com.siu.bicyclette.app.task.GeocoderLocationByNameTask;
 import com.siu.bicyclette.app.toast.AppToast;
-import com.siu.bicyclette.dao.DatabaseHelper;
-import com.siu.bicyclette.service.GeocoderService;
-import com.siu.bicyclette.service.LocationService;
+import com.siu.bicyclette.model.StationStatus;
+import com.siu.bicyclette.service.*;
 import com.siu.bicyclette.util.LocationUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Lukasz Piliszczuk <lukasz.pili AT gmail.com>
@@ -27,6 +36,13 @@ import com.siu.bicyclette.util.LocationUtils;
 public class StationsMapActivity extends SherlockMapActivity {
 
     private EnhancedMapView mapView;
+
+    private LocalBroadcastManager localBroadcastManager;
+
+    private StationStatusService stationStatusService;
+    private BroadcastReceiver stationStatusUpdateReceiver;
+    private BroadcastReceiver cityGetByLocationReceiver;
+    private BroadcastReceiver stationsGetByCityReceiver;
 
     private LocationService locationService;
     private LocationService.LocationResultListener locationResultListener;
@@ -36,6 +52,9 @@ public class StationsMapActivity extends SherlockMapActivity {
 
     private ItemizedOverlay positionItemizedOverlay;
     private ItemizedOverlay stationOverlay;
+
+    private City currentCity;
+    private List<Station> stations = new ArrayList<Station>();
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -47,17 +66,23 @@ public class StationsMapActivity extends SherlockMapActivity {
 
         mapView = (EnhancedMapView) findViewById(R.id.map);
 
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);
+
+        initStations();
         initActionBar();
         initLocation();
         initMap();
-        initDatabase();
+
+        stationStatusService.startStationStatusUpdate(stationStatusUpdateReceiver);
+        localBroadcastManager.registerReceiver(cityGetByLocationReceiver, new IntentFilter(CityGetByLocationService.class.getSimpleName()));
+        localBroadcastManager.registerReceiver(stationsGetByCityReceiver, new IntentFilter(StationsGetByCityService.class.getSimpleName()));
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
         locationService.startCurrentLocation(locationResultListener);
-//        startService(new Intent(this, StationStatusLoaderService.class));
     }
 
     @Override
@@ -65,6 +90,16 @@ public class StationsMapActivity extends SherlockMapActivity {
         super.onStop();
         locationService.stopCurrentLocation();
         geocoderService.stopLocationByNameIfRunning();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        stationStatusService.stopStationsStatusUpdate();
+        localBroadcastManager.unregisterReceiver(cityGetByLocationReceiver);
+        localBroadcastManager.unregisterReceiver(stationStatusUpdateReceiver);
+
+        super.onDestroy();
     }
 
     @Override
@@ -121,6 +156,59 @@ public class StationsMapActivity extends SherlockMapActivity {
         geocoderService.startLocationByName(name, geocoderLocationByNameTaskListener);
     }
 
+    private void initStations() {
+
+        stationStatusService = new StationStatusService(this);
+        stationStatusUpdateReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                List<StationStatus> stationStatuses = intent.getParcelableArrayListExtra(Intent.EXTRA_RETURN_RESULT);
+
+                if (stations.isEmpty()) {
+                    Log.d(getClass().getName(), "Stations are empty, there is no status to update");
+                    return;
+                }
+            }
+        };
+
+        cityGetByLocationReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                currentCity = intent.getExtras().getParcelable(Intent.EXTRA_RETURN_RESULT);
+
+                intent = new Intent(context, StationsGetByCityService.class);
+                intent.putExtra(StationsGetByCityService.EXTRA_CITY, currentCity);
+
+                startService(intent);
+            }
+        };
+
+        stationsGetByCityReceiver = new BroadcastReceiver() {
+
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                List<Station> stationsRes = intent.getParcelableArrayListExtra(Intent.EXTRA_RETURN_RESULT);
+
+                stations.clear();
+                stations.addAll(stationsRes);
+
+                stationOverlay.getOverlayItems().clear();
+
+                for (Station station : stations) {
+                    stationOverlay.addOverlay(new OverlayItem(LocationUtils.getGeoPoint(station.getCoordLat(), station.getCoordLong()), null, null));
+                }
+
+                mapView.invalidate();
+            }
+        };
+    }
+
+
     private void initActionBar() {
 
         ActionBar actionBar = getSupportActionBar();
@@ -134,6 +222,7 @@ public class StationsMapActivity extends SherlockMapActivity {
 
             @Override
             public void onLocationSuccess(Location location) {
+                startCityLocation(location);
                 locatePositionOnMap(LocationUtils.getGeoPoint(location));
             }
 
@@ -168,6 +257,7 @@ public class StationsMapActivity extends SherlockMapActivity {
 
             @Override
             public void onSuccess(GeoPoint geoPoint) {
+                startCityLocation(LocationUtils.getLocation(geoPoint));
                 locatePositionOnMap(geoPoint);
             }
 
@@ -209,16 +299,19 @@ public class StationsMapActivity extends SherlockMapActivity {
             }
         });
 
-        positionItemizedOverlay = new ItemizedOverlay(getResources().getDrawable(R.drawable.ic_maps_pin));
-        stationOverlay = new ItemizedOverlay(getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
+        positionItemizedOverlay = new ItemizedOverlay(getResources().getDrawable(R.drawable.ic_maps_indicator_current_position));
+        stationOverlay = new ItemizedOverlay(getResources().getDrawable(R.drawable.ic_maps_pin));
 
         mapView.getOverlays().add(positionItemizedOverlay);
     }
 
-    private void initDatabase() {
+    private void startCityLocation(Location location) {
 
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
-        databaseHelper.createDatabaseIfNotExists();
+        Intent intent = new Intent(this, CityGetByLocationService.class);
+        intent.putExtra(CityGetByLocationService.EXTRA_LAT, location.getLatitude());
+        intent.putExtra(CityGetByLocationService.EXTRA_LONG, location.getLongitude());
+
+        startService(intent);
     }
 
     private void locatePositionOnMap(GeoPoint geoPoint) {
@@ -228,8 +321,6 @@ public class StationsMapActivity extends SherlockMapActivity {
 
         mapView.getController().setZoom(13);
         mapView.getController().animateTo(geoPoint);
-
-        // bike location
     }
 
     @Override
