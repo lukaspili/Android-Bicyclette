@@ -13,12 +13,16 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
+    <supports-screens android:anyDensity="true"
+                      android:largeScreens="true"
+                      android:normalScreens="true"
+                      android:smallScreens="true"/>
 
     <application android:name="com.siu.bicyclette.Application" android:icon="@drawable/ic_launcher" android:label="@string/app_name"
                  android:theme="@style/Theme.Sherlock.ForceOverflow"
                  android:uiOptions="splitActionBarWhenNarrow">
 
-        <activity android:name=".activity.BikesMapActivity" android:label="@string/app_name" android:launchMode="singleTop">
+        <activity android:name=".app.activity.StationsMapActivity" android:label="@string/app_name" android:launchMode="singleTop">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -32,9 +36,12 @@
             <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"/>
         </activity>
 
-        <service android:name=".service.BikeService" />
+        <service android:name=".service.StationStatusService$StationStatusUpdateService"/>
+        <service android:name=".service.CityGetByLocationService"/>
+        <service android:name=".service.StationsGetByCityService"/>
+        <service android:name=".service.GetCurrentLocationService"/>
 
-        <provider android:name="com.siu.bicyclette.provider.GeocodeContentProvider" android:authorities="com.siu.bicyclette.provider.geocodecontentprovider"/>
+        <provider android:name=".app.provider.GeocodeContentProvider" android:authorities="com.siu.bicyclette.app.provider.geocodecontentprovider"/>
 
         <uses-library android:required="true" android:name="com.google.android.maps"/>
 
