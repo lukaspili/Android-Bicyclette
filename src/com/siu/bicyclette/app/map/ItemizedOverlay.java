@@ -1,6 +1,7 @@
 package com.siu.bicyclette.app.map;
 
 import android.graphics.drawable.Drawable;
+import android.view.LayoutInflater;
 import com.google.android.maps.OverlayItem;
 
 import java.util.ArrayList;

@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class StationStatusService {
 
-    private static final int DELAY = 20000;
+    private static final int DELAY = 30000;
 
     private static StationStatusResource stationStatusResource = new StationStatusResource();
 
@@ -76,6 +76,10 @@ public class StationStatusService {
         protected void onHandleIntent(Intent intent) {
 
             final ArrayList<StationStatus> stationStatus = stationStatusResource.getStationsStatus();
+
+            if (null == stationStatus || stationStatus.isEmpty()) {
+                return;
+            }
 
             SQLiteDatabase database = DatabaseHelper.getInstance().getDatabase();
 

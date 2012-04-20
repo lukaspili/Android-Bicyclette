@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * Entity mapped to table stations.
  */
-public class Station implements android.os.Parcelable {
+public class Station implements Parcelable {
 
     private Long id;
     private String name;
