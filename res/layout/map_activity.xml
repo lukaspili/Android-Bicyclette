@@ -98,31 +98,31 @@
     </RelativeLayout>
 
 
-    <ImageButton android:id="@+id/map_corner_right_right"
+    <ImageButton android:id="@+id/map_bottom_free_button"
                  android:layout_width="wrap_content" android:layout_height="wrap_content"
                  android:layout_alignRight="@id/map"
                  android:layout_alignBottom="@id/map"
                  android:src="@drawable/free"
                  android:background="@android:color/transparent"/>
 
-    <ImageButton android:id="@+id/map_corner_right_left"
+    <ImageButton android:id="@+id/map_bottom_available_button"
                  android:layout_width="wrap_content" android:layout_height="wrap_content"
-                 android:layout_toLeftOf="@id/map_corner_right_right"
+                 android:layout_toLeftOf="@id/map_bottom_free_button"
                  android:layout_alignBottom="@id/map"
                  android:src="@drawable/avail_pushed"
                  android:background="@android:color/transparent"/>
 
-    <ImageButton android:id="@+id/map_corner_left_left"
+    <ImageButton android:id="@+id/map_bottom_location_button"
                  android:layout_width="wrap_content" android:layout_height="wrap_content"
                  android:layout_alignLeft="@id/map"
                  android:layout_alignBottom="@id/map"
                  android:src="@drawable/locate"
                  android:background="@android:color/transparent"/>
 
-    <ImageButton android:id="@+id/map_corner_left_right"
+    <ImageButton android:id="@+id/map_bottom_favorites_button"
                  android:layout_width="wrap_content" android:layout_height="wrap_content"
                  android:layout_alignBottom="@id/map"
-                 android:layout_toRightOf="@id/map_corner_left_left"
+                 android:layout_toRightOf="@id/map_bottom_location_button"
                  android:src="@drawable/favorites"
                  android:background="@android:color/transparent"/>
 
