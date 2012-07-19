@@ -18,6 +18,10 @@ public class StationDao extends AbstractDao<Station, Long> {
 
     public static final String TABLENAME = "stations";
 
+    /**
+     * Properties of entity Station.<br/>
+     * Can be used for QueryBuilder and for referencing column names.
+    */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "name");
@@ -44,7 +48,8 @@ public class StationDao extends AbstractDao<Station, Long> {
 
     /** Creates the underlying database table. */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String sql = "CREATE TABLE " + (ifNotExists? "IF NOT EXISTS ": "") + "'stations' (" + //
+        String constraint = ifNotExists? "IF NOT EXISTS ": "";
+        db.execSQL("CREATE TABLE " + constraint + "'stations' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'name' TEXT," + // 1: name
                 "'address' TEXT," + // 2: address
@@ -56,8 +61,7 @@ public class StationDao extends AbstractDao<Station, Long> {
                 "'available' INTEGER," + // 8: available
                 "'datetime' INTEGER," + // 9: datetime
                 "'open' INTEGER," + // 10: open
-                "'bonus' INTEGER);"; // 11: bonus
-        db.execSQL(sql);
+                "'bonus' INTEGER);"); // 11: bonus
     }
 
     /** Drops the underlying database table. */
@@ -175,6 +179,7 @@ public class StationDao extends AbstractDao<Station, Long> {
         entity.setBonus(cursor.isNull(offset + 11) ? null : cursor.getShort(offset + 11) != 0);
      }
     
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(Station entity, long rowId) {
         entity.setId(rowId);

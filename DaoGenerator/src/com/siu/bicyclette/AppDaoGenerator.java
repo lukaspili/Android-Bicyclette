@@ -11,7 +11,7 @@ public class AppDaoGenerator {
 
     public static void main(String[] args) throws Exception {
 
-        Schema schema = new Schema(2, "com.siu.bicyclette");
+        Schema schema = new Schema(1, "com.siu.bicyclette");
         schema.enableKeepSectionsByDefault();
 
         addStation(schema);

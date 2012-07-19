@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+    <com.siu.bicyclette.app.map.RoundedMapView android:id="@+id/map"
+                                               android:layout_width="fill_parent" android:layout_height="fill_parent"/>
+
+
+    <RelativeLayout android:id="@+id/map_top"
+                    android:layout_width="fill_parent" android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/map"
+                    android:layout_alignRight="@id/map"
+                    android:layout_alignTop="@id/map">
+
+        <ImageView android:id="@+id/map_top_left"
+                   android:layout_width="wrap_content" android:layout_height="wrap_content"
+                   android:layout_alignTop="@id/map"
+                   android:layout_alignLeft="@id/map"
+                   android:src="@drawable/top_left"/>
+
+        <ImageView android:id="@+id/map_top_right"
+                   android:layout_width="wrap_content" android:layout_height="wrap_content"
+                   android:layout_alignParentRight="true"
+                   android:src="@drawable/top_right"/>
+
+        <ImageView android:id="@+id/map_top_repeat"
+                   android:layout_width="fill_parent" android:layout_height="wrap_content"
+                   android:layout_toRightOf="@id/map_top_left"
+                   android:layout_toLeftOf="@id/map_top_right"
+                   android:background="@drawable/repeatable_top"/>
+
+        <RelativeLayout android:id="@+id/map_top_jauge_left"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:paddingTop="13dip" android:paddingLeft="6dip">
+
+            <ImageView android:id="@+id/map_top_jauge_left_image"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:src="@drawable/jauge_left_green"/>
+
+            <TextView android:id="@+id/map_top_jauge_left_text"
+                      android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:layout_centerInParent="true"
+                      android:paddingTop="10dip" android:paddingLeft="5dip"
+                      android:text="1"
+                      android:textStyle="bold"
+                      android:textSize="17sp"
+                      android:textColor="@android:color/white"/>
+        </RelativeLayout>
+
+        <RelativeLayout android:id="@+id/map_top_jauge_right"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/map_top_right"
+                        android:paddingTop="13dip" android:paddingRight="5dip">
+
+            <ImageView android:id="@+id/map_top_jauge_right_image"
+                       android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:src="@drawable/jauge_right_free"/>
+
+            <TextView android:id="@+id/map_top_jauge_right_text"
+                      android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:layout_centerInParent="true"
+                      android:paddingTop="10dip" android:paddingRight="5dip"
+                      android:text="10"
+                      android:textStyle="bold"
+                      android:textSize="17sp"
+                      android:textColor="@android:color/white"/>
+        </RelativeLayout>
+
+        <ImageView android:id="@+id/map_top_jauge_background_repeat"
+                   android:layout_width="wrap_content" android:layout_height="wrap_content"
+                   android:layout_toRightOf="@id/map_top_jauge_left"
+                   android:layout_toLeftOf="@id/map_top_jauge_right"
+                   android:layout_marginTop="13dip"
+                   android:background="@drawable/repeatable_jauge_background"/>
+
+        <ImageView android:id="@+id/map_top_jauge_repeat"
+                   android:layout_width="120dip" android:layout_height="wrap_content"
+                   android:layout_toRightOf="@id/map_top_jauge_left"
+                   android:layout_marginTop="13dip"
+                   android:background="@drawable/jauge_background_green_repeatable"/>
+
+        <ImageButton android:id="@+id/map_top_alert"
+                     android:layout_width="wrap_content" android:layout_height="wrap_content"
+                     android:layout_alignLeft="@id/map_top_right"
+                     android:paddingTop="16dip" android:paddingLeft="8dip"
+                     android:background="@android:color/transparent"
+                     android:src="@drawable/alert_disabled"/>
+
+        <ImageButton android:id="@+id/map_top_favorite"
+                     android:layout_width="wrap_content" android:layout_height="wrap_content"
+                     android:layout_alignRight="@id/map_top_right"
+                     android:paddingTop="17dip" android:paddingRight="8dip"
+                     android:background="@android:color/transparent"
+                     android:src="@drawable/star_disabled"/>
+
+    </RelativeLayout>
+
+
+    <ImageButton android:id="@+id/map_corner_right_right"
+                 android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:layout_alignRight="@id/map"
+                 android:layout_alignBottom="@id/map"
+                 android:src="@drawable/free"
+                 android:background="@android:color/transparent"/>
+
+    <ImageButton android:id="@+id/map_corner_right_left"
+                 android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:layout_toLeftOf="@id/map_corner_right_right"
+                 android:layout_alignBottom="@id/map"
+                 android:src="@drawable/avail_pushed"
+                 android:background="@android:color/transparent"/>
+
+    <ImageButton android:id="@+id/map_corner_left_left"
+                 android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:layout_alignLeft="@id/map"
+                 android:layout_alignBottom="@id/map"
+                 android:src="@drawable/locate"
+                 android:background="@android:color/transparent"/>
+
+    <ImageButton android:id="@+id/map_corner_left_right"
+                 android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:layout_alignBottom="@id/map"
+                 android:layout_toRightOf="@id/map_corner_left_left"
+                 android:src="@drawable/favorites"
+                 android:background="@android:color/transparent"/>
+
+    <!--<LinearLayout android:id="@+id/map_controllers"-->
+    <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
+    <!--android:layout_alignBottom="@id/map"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:paddingBottom="50dip"/>-->
+
+</RelativeLayout>

@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import com.siu.bicyclette.Application;
+import com.siu.android.andutils.Application;
 
 import java.util.Locale;
 import java.util.Timer;
@@ -35,8 +35,8 @@ public class LocationService {
     private LocationResultListener locationResultListener;
 
     public LocationService() {
-        locationManager = (LocationManager) Application.getAppContext().getSystemService(Context.LOCATION_SERVICE);
-        geocoder = new Geocoder(Application.getAppContext(), Locale.FRANCE);
+        locationManager = (LocationManager) Application.getContext().getSystemService(Context.LOCATION_SERVICE);
+        geocoder = new Geocoder(Application.getContext(), Locale.FRANCE);
     }
 
     public LocationService(LocationManager locationManager, Geocoder geocoder) {

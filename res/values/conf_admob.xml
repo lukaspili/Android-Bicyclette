@@ -1,0 +1,4 @@
+<resources>
+    <string name="conf_admob_banner_unitid">14d8e3d27fa74cc2</string>
+    <string name="conf_admob_banner_testdevices">TEST_EMULATOR</string>
+</resources>

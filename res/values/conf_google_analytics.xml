@@ -1,0 +1,9 @@
+<resources>
+    <string name="ga_api_key">UA-31282622-6</string>
+    <bool name="ga_debug">false</bool>
+    <bool name="ga_dryRun">false</bool>
+    <bool name="ga_auto_activity_tracking">false</bool>
+    <bool name="ga_anonymizeIp">false</bool>
+    <integer name="ga_sampleRate">100</integer>
+    <integer name="ga_dispatchPeriod">60</integer>
+</resources>

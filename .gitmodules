@@ -1,0 +1,3 @@
+[submodule "libs/andgapisutils"]
+	path = libs/andgapisutils
+	url = git@github.com:Siu-soon/Android-Googleapis-Utils.git

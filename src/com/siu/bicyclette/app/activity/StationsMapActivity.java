@@ -25,7 +25,6 @@ import com.siu.bicyclette.app.map.ItemizedOverlay;
 import com.siu.bicyclette.app.task.GeocoderLocationByNameTask;
 import com.siu.bicyclette.app.toast.AppToast;
 import com.siu.bicyclette.model.StationCluster;
-import com.siu.bicyclette.model.ClusteredGeoPoint;
 import com.siu.bicyclette.model.StationClusterPoint;
 import com.siu.bicyclette.model.StationStatus;
 import com.siu.bicyclette.service.*;
@@ -236,7 +235,7 @@ public class StationsMapActivity extends SherlockMapActivity {
                 GeoPoint bottomLeftGeoPoint = mapView.getProjection().fromPixels(0, mapView.getHeight() - 1);
                 GeoPoint topRightGeoPoint = mapView.getProjection().fromPixels(mapView.getWidth() - 1, 0);
 
-                intent = new Intent(StationsMapActivity.this, StationClustersCalculationService.class);
+//                intent = new Intent(StationsMapActivity.this, StationClustersCalculationService.class);
 
                 Point point = new Point();
                 Station station;

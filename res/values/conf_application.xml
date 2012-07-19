@@ -1,0 +1,6 @@
+<resources>
+    <bool name="application_debug">false</bool>
+    <string name="application_preferences_centers_md5">centers_md5</string>
+    <string name="application_preferences_centers_lastupdate">centers_lastupdate</string>
+    <string name="application_preferences_news_md5">news_md5</string>
+</resources>

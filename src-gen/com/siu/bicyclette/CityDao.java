@@ -18,6 +18,10 @@ public class CityDao extends AbstractDao<City, Long> {
 
     public static final String TABLENAME = "cities";
 
+    /**
+     * Properties of entity City.<br/>
+     * Can be used for QueryBuilder and for referencing column names.
+    */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
@@ -36,12 +40,12 @@ public class CityDao extends AbstractDao<City, Long> {
 
     /** Creates the underlying database table. */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String sql = "CREATE TABLE " + (ifNotExists? "IF NOT EXISTS ": "") + "'cities' (" + //
+        String constraint = ifNotExists? "IF NOT EXISTS ": "";
+        db.execSQL("CREATE TABLE " + constraint + "'cities' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
                 "'NAME' TEXT," + // 1: name
                 "'COORD_LAT' REAL," + // 2: coordLat
-                "'COORD_LONG' REAL);"; // 3: coordLong
-        db.execSQL(sql);
+                "'COORD_LONG' REAL);"); // 3: coordLong
     }
 
     /** Drops the underlying database table. */
@@ -103,6 +107,7 @@ public class CityDao extends AbstractDao<City, Long> {
         entity.setCoordLong(cursor.isNull(offset + 3) ? null : cursor.getDouble(offset + 3));
      }
     
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(City entity, long rowId) {
         entity.setId(rowId);

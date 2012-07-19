@@ -3,8 +3,6 @@ package com.siu.bicyclette.service;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -12,9 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import com.siu.bicyclette.Application;
 
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 

@@ -2,7 +2,7 @@ package com.siu.bicyclette.service;
 
 import android.location.Geocoder;
 import android.util.Log;
-import com.siu.bicyclette.Application;
+import com.siu.android.andutils.Application;
 import com.siu.bicyclette.app.task.GeocoderLocationByNameTask;
 
 import java.util.Locale;
@@ -16,7 +16,7 @@ public class GeocoderService {
     private GeocoderLocationByNameTask geocoderLocationByNameTask;
 
     public GeocoderService() {
-        geocoder = new Geocoder(Application.getAppContext(), Locale.FRANCE);
+        geocoder = new Geocoder(Application.getContext(), Locale.FRANCE);
     }
 
     public void startLocationByName(String name, GeocoderLocationByNameTask.Listener geocoderLocationByNameTaskListener) {

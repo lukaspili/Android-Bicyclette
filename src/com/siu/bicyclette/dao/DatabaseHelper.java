@@ -4,10 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import com.siu.bicyclette.Application;
+import com.siu.android.andutils.Application;
 import com.siu.bicyclette.DaoMaster;
 import com.siu.bicyclette.DaoSession;
-import com.siu.bicyclette.StationDao;
 
 import java.io.*;
 
@@ -16,7 +15,7 @@ import java.io.*;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static String DB_PATH = "/data/data/" + Application.getAppContext().getPackageName() + "/databases/";
+    private static String DB_PATH = "/data/data/" + Application.getContext().getPackageName() + "/databases/";
     private static String DB_NAME = "stations.sqlite";
 
     private static DatabaseHelper instance;
@@ -116,7 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static DatabaseHelper getInstance() {
 
         if (null == instance) {
-            instance = new DatabaseHelper(Application.getAppContext());
+            instance = new DatabaseHelper(Application.getContext());
         }
 
         return instance;

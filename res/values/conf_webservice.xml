@@ -1,0 +1,10 @@
+<resources>
+    <string name="webservice_centers_url">http://carte.dondusang.com/gmap_regionchanged.php?fb=0&amp;t1=0&amp;t2=6&amp;nelat=%1$s&amp;nelon=%2$s&amp;swlat=%3$s&amp;swlon=%4$s</string>
+
+    <integer name="webservice_map_france_swlat">42098222</integer>
+    <integer name="webservice_map_france_swlon">-5185547</integer>
+    <integer name="webservice_map_france_nelat">51618017</integer>
+    <integer name="webservice_map_france_nelon">8261718</integer>
+
+    <string name="webservice_news_url">http://iphone.dondusang.com/infos/?feed=rss2</string>
+</resources>

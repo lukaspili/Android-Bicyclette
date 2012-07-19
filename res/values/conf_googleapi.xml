@@ -1,0 +1,7 @@
+<resources>
+    <!-- debug lukasz -->
+    <string name="googlemap_key">09LFyGLHkTQnsE0okmmPXP1MCTTmgS4XTwI3p9g</string>
+
+    <!-- prod -->
+    <!--<string name="googlemap_key">09LFyGLHkTQmTw9G3rHMkhqU0K1NFehLbQZPODQ</string>-->
+</resources>

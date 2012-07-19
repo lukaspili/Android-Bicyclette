@@ -7,7 +7,6 @@ package com.siu.bicyclette;
 import android.os.Parcel;
 import android.os.Parcelable;
 // KEEP INCLUDES END
-
 /**
  * Entity mapped to table cities.
  */
@@ -31,7 +30,6 @@ public class City implements Parcelable {
             return new City[i];
         }
     };
-
     // KEEP FIELDS END
 
     public City() {
@@ -101,7 +99,6 @@ public class City implements Parcelable {
         parcel.writeDouble(coordLat);
         parcel.writeDouble(coordLong);
     }
-
     // KEEP METHODS END
 
 }

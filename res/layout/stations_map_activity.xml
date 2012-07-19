@@ -3,9 +3,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent" android:layout_height="fill_parent">
 
-    <com.siu.bicyclette.app.map.EnhancedMapView android:id="@+id/map"
+    <com.siu.bicyclette.app.map.EnhancedMapView
                                                      android:layout_width="fill_parent" android:layout_height="fill_parent"
                                                      android:layout_alignParentBottom="true"
-                                                     android:clickable="true" android:apiKey="@string/googleapi_map_key"/>
+                                                     android:clickable="true" android:apiKey="@string/googlemap_key"/>
 
 </RelativeLayout>
