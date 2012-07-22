@@ -3,14 +3,13 @@ package com.siu.bicyclette.app.activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.*;
 import com.google.android.maps.MapView;
 import com.siu.bicyclette.R;
 import com.siu.bicyclette.Station;
 import com.siu.bicyclette.app.map.RoundedMapView;
+import com.siu.bicyclette.dao.DatabaseHelper;
+import com.siu.bicyclette.task.GetDatabaseTask;
 
 /**
  * @author Lukasz Piliszczuk <lukasz.pili AT gmail.com>
@@ -28,6 +27,8 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private ImageButton favoritesButton;
     private ImageButton alertButton;
     private ImageButton addFavoriteButton;
+
+    private GetDatabaseTask getDatabaseTask;
 
     private InfoType infoType = InfoType.AVAILABLE;
 
@@ -50,6 +51,9 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
         initMap();
         initButtons();
+
+        getDatabaseTask = new GetDatabaseTask(this);
+        getDatabaseTask.execute();
     }
 
     @Override
@@ -57,6 +61,12 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         super.onWindowFocusChanged(hasFocus);
 
         initStation();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DatabaseHelper.getInstance().close();
     }
 
     private void initMap() {
@@ -117,6 +127,18 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         jaugeRightText.setText(String.valueOf(station.getFree()));
         jaugeRepeat.getLayoutParams().width = (jaugeBackgroundRepeat.getWidth() / station.getTotal()) * station.getAvailable();
     }
+
+
+    public void onGetDatabaseTaskFinished(boolean result) {
+        if (!result) {
+            Log.wtf(getClass().getName(), "Cannot initialize database, application will not start");
+            Toast.makeText(this, "Impossible d'initialiser la base de donnée, veuillez relancer l'application ou nous contacter", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+
+    }
+
 
     @Override
     protected boolean isRouteDisplayed() {

@@ -17,8 +17,8 @@ import java.util.List;
  */
 public class StationStatusResource {
 
-    private static final String URL = "http://bicyclette.indri.fr/api";
-    private static final int SIZE = 4 * 1201;
+    private static final String URL = "http://bicyclette.indri.fr/api?c=paris";
+    private static final int SIZE = 4 * 1300;
 
     public ArrayList<StationStatus> getStationsStatus() {
 
@@ -64,9 +64,9 @@ public class StationStatusResource {
 
         ArrayList<StationStatus> stationStatuses = new ArrayList<StationStatus>();
 
-        for (int i = 0; i < bytes.length; i = i + 4) {
+        for (int i = 0; i < bytes.length; i = i + 5) {
             try {
-                stationStatuses.add(new StationStatus(ByteUtils.unsignedShortToInt(bytes, i), bytes[i + 2], bytes[i + 3]));
+                stationStatuses.add(new StationStatus(ByteUtils.unsignedShortToInt(bytes, i + 1), bytes[i + 3], bytes[i + 4]));
             } catch (ArrayIndexOutOfBoundsException e) {
                 Log.w(getClass().getName(), "Error getting station status", e);
                 continue;

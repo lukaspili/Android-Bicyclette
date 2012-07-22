@@ -1,6 +1,8 @@
 <resources>
-    <bool name="application_debug">false</bool>
-    <string name="application_preferences_centers_md5">centers_md5</string>
+    <bool name="application_debug">true</bool>
+    <integer name="application_database_creation_default_timestamp">1342944758</integer>
+    <string name="application_preferences_database_creation_timestamp">database_timestamp</string>
+    <string name="application_preferences_database_update_timestamp_ms">database_check_timestamp</string>
     <string name="application_preferences_centers_lastupdate">centers_lastupdate</string>
     <string name="application_preferences_news_md5">news_md5</string>
 </resources>
