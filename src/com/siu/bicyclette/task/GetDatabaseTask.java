@@ -7,12 +7,12 @@ import android.util.Log;
 import ch.boye.httpclientandroidlib.HttpResponse;
 import com.siu.android.andutils.Application;
 import com.siu.android.andutils.util.HttpUtils;
+import com.siu.android.andutils.util.NetworkUtils;
 import com.siu.bicyclette.R;
-import com.siu.bicyclette.app.activity.MapActivity;
+import com.siu.bicyclette.activity.MapActivity;
 import com.siu.bicyclette.dao.DatabaseHelper;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -49,6 +49,17 @@ public class GetDatabaseTask extends AsyncTask<Void, Void, Boolean> {
                 Log.d(getClass().getName(), "Database already checked in previous 24 hours, exit");
                 return true;
             }
+        }
+
+        if (!NetworkUtils.isOnline()) {
+            Log.d(getClass().getName(), "No network connection, cannot download from server");
+
+            if (dbExists) {
+                Log.d(getClass().getName(), "Local database already exists, exit");
+                return true;
+            }
+
+            return copyLocal();
         }
 
         HttpResponse response = HttpUtils.request("http://bicyclette.indri.fr/api/checkdb.php?c=paris&v=" + databaseCreationTimestamp, HttpUtils.HttpMethod.GET);
@@ -97,6 +108,10 @@ public class GetDatabaseTask extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean result) {
+        if (null == activity) {
+            return;
+        }
+
         activity.onGetDatabaseTaskFinished(result);
     }
 
@@ -130,5 +145,9 @@ public class GetDatabaseTask extends AsyncTask<Void, Void, Boolean> {
         }
 
         Log.d(getClass().getName(), "Copy database is done successfully");
+    }
+
+    public void setActivity(MapActivity activity) {
+        this.activity = activity;
     }
 }

@@ -1,4 +1,4 @@
-package com.siu.bicyclette.app.map;
+package com.siu.bicyclette.map;
 
 import android.content.Context;
 import android.graphics.*;
@@ -14,7 +14,7 @@ import com.siu.bicyclette.R;
  */
 public class RoundedMapView extends LinearLayout {
 
-    private MapView mapView;
+    private EnhancedMapView mapView;
     private Bitmap windowFrame;
 
     /**
@@ -82,7 +82,7 @@ public class RoundedMapView extends LinearLayout {
         windowFrame = null; // If the layout changes null our frame so it can be recreated with the new width and height
     }
 
-    public MapView getMapView() {
+    public EnhancedMapView getMapView() {
         return mapView;
     }
 }

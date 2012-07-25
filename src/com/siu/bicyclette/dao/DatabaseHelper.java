@@ -4,8 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.siu.android.andutils.Application;
-import com.siu.bicyclette.DaoMaster;
-import com.siu.bicyclette.DaoSession;
+import com.siu.android.bicyclette.DaoMaster;
+import com.siu.android.bicyclette.DaoSession;
 
 /**
  * @author Lukasz Piliszczuk <lukasz.pili AT gmail.com>
@@ -92,7 +92,7 @@ public class DatabaseHelper {
     }
 
     public static void initEmpty() {
-        SQLiteDatabase db = new OpenHelper(Application.getContext()).getReadableDatabase();
+        SQLiteDatabase db = new OpenHelper(Application.getContext()).getWritableDatabase();
         db.close();
     }
 

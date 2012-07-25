@@ -1,9 +1,7 @@
 package com.siu.bicyclette.model;
 
-import android.graphics.Point;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.Projection;
-import com.siu.bicyclette.app.activity.StationsMapActivity;
 
 import java.util.ArrayList;
 import java.util.List;
