@@ -18,18 +18,18 @@ public class DaoGenerator {
         station.setTableName("stations");
 
         station.addIdProperty();
-        station.addIntProperty("remote_id");
+        station.addIntProperty("remote_id").columnName("remote_id");
 
-        station.addStringProperty("name");
-        station.addStringProperty("address");
-        station.addStringProperty("city");
+        station.addStringProperty("name").columnName("name");
+        station.addStringProperty("address").columnName("address");
+        station.addStringProperty("city").columnName("city");
 
         station.addDoubleProperty("latitude").columnName("lat");
         station.addDoubleProperty("longitude").columnName("long");
 
-        station.addIntProperty("total");
-        station.addIntProperty("free");
-        station.addIntProperty("available");
+        station.addIntProperty("total").columnName("total");
+        station.addIntProperty("free").columnName("free");
+        station.addIntProperty("available").columnName("available");
 
         station.addDateProperty("datetime").columnName("datetime");
 

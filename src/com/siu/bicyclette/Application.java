@@ -2,6 +2,7 @@ package com.siu.bicyclette;
 
 import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import com.siu.bicyclette.dao.DatabaseHelper;
 
 /**
@@ -14,10 +15,15 @@ public class Application extends com.siu.android.andutils.Application {
         super.onCreate();
 
         if (Application.getContext().getResources().getBoolean(R.bool.application_debug)) {
+            Log.d(getClass().getName(), "Debug mode, remove all");
+
             Application.getContext().deleteDatabase(DatabaseHelper.DB_NAME);
+
             PreferenceManager.getDefaultSharedPreferences(Application.getContext()).edit()
                     .remove(Application.getContext().getString(R.string.application_preferences_database_creation_timestamp))
                     .remove(Application.getContext().getString(R.string.application_preferences_database_update_timestamp_ms))
+                    .remove(Application.getContext().getString(R.string.application_preferences_favorites))
+                    .remove(Application.getContext().getString(R.string.application_preferences_alerts))
                     .commit();
         }
     }

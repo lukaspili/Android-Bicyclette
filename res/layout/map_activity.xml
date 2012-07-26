@@ -69,6 +69,18 @@
                       android:textColor="@android:color/white"/>
         </RelativeLayout>
 
+        <TextView android:id="@+id/map_top_title"
+                  android:layout_width="fill_parent" android:layout_height="wrap_content"
+                  android:layout_toRightOf="@id/map_top_jauge_left"
+                  android:layout_toLeftOf="@id/map_top_jauge_right"
+                  android:layout_marginTop="5dip"
+                  android:gravity="center"
+                  android:textSize="17sp"
+                  android:singleLine="true"
+                  android:ellipsize="marquee"
+                  android:textStyle="bold"
+                  android:text="Title"/>
+
         <ImageView android:id="@+id/map_top_jauge_background_repeat"
                    android:layout_width="wrap_content" android:layout_height="wrap_content"
                    android:layout_toRightOf="@id/map_top_jauge_left"

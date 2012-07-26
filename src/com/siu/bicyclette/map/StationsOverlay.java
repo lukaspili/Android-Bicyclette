@@ -5,14 +5,11 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
-import android.util.Log;
 import android.util.TypedValue;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.ItemizedOverlay;
 import com.google.android.maps.MapView;
-import com.siu.android.andgapisutils.util.MarkerUtils;
 import com.siu.android.bicyclette.Station;
 import com.siu.bicyclette.Application;
 import com.siu.bicyclette.R;
@@ -64,18 +61,21 @@ public class StationsOverlay extends ItemizedOverlay<StationOverlayItem> {
 
     public void addStations(List<Station> stations) {
         for (Station station : stations) {
-            station.setFree(0);
-            station.setAvailable(0);
             overlayItems.add(new StationOverlayItem(station));
         }
 
         populate();
     }
 
+    public void clearOverlayItems() {
+        overlayItems.clear();
+        populate();
+    }
+
     @Override
     protected boolean onTap(int i) {
         StationOverlayItem selectedItem = getItem(i);
-        activity.showStation(selectedItem.getStation());
+        activity.showCurrentStation(selectedItem.getStation());
 
         for (StationOverlayItem item : overlayItems) {
             if (item.equals(selectedItem)) {
@@ -83,8 +83,6 @@ public class StationsOverlay extends ItemizedOverlay<StationOverlayItem> {
             } else {
                 item.getDrawable().setAlpha(ALPHA_UNSELECTED);
             }
-
-
         }
 
         return true;
@@ -98,7 +96,7 @@ public class StationsOverlay extends ItemizedOverlay<StationOverlayItem> {
         // go through all OverlayItems and draw title for each of them
         for (StationOverlayItem item : overlayItems) {
 
-            String label = item.getStation().getFree().toString();
+            String label = String.valueOf(activity.getInfoTypeStatus(item.getStation()));
 
             /* Converts latitude & longitude of this overlay item to coordinates on screen.
              * As we have called boundCenterBottom() in constructor, so these coordinates

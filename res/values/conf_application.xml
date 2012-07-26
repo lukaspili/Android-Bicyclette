@@ -1,8 +1,13 @@
 <resources>
-    <bool name="application_debug">true</bool>
+    <bool name="application_debug">false</bool>
+
     <integer name="application_database_creation_default_timestamp">1342944758</integer>
     <string name="application_preferences_database_creation_timestamp">database_timestamp</string>
     <string name="application_preferences_database_update_timestamp_ms">database_check_timestamp</string>
-    <string name="application_preferences_centers_lastupdate">centers_lastupdate</string>
-    <string name="application_preferences_news_md5">news_md5</string>
+
+    <string name="application_preferences_favorites">favorites</string>
+    <string name="application_preferences_alerts">alerts</string>
+
+    <string name="city_label">Paris</string>
+    <string name="city_value">paris</string>
 </resources>

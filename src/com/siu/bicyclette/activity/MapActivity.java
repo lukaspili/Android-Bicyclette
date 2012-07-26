@@ -1,25 +1,27 @@
 package com.siu.bicyclette.activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapView;
 import com.siu.android.andgapisutils.map.EnhancedMapView;
 import com.siu.android.andgapisutils.util.LocationUtils;
 import com.siu.android.bicyclette.Station;
-import com.siu.bicyclette.Application;
 import com.siu.bicyclette.R;
-import com.siu.bicyclette.dao.DatabaseHelper;
 import com.siu.bicyclette.map.RoundedMapView;
-import com.siu.bicyclette.map.StationOverlayItem;
 import com.siu.bicyclette.map.StationsOverlay;
 import com.siu.bicyclette.task.GetDatabaseTask;
 import com.siu.bicyclette.task.GetStationsTask;
+import com.siu.bicyclette.task.GetStatusTask;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Lukasz Piliszczuk <lukasz.pili AT gmail.com>
@@ -32,6 +34,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private RelativeLayout topLayout;
     private ImageView jaugeBackgroundRepeat;
     private ImageView jaugeRepeat;
+    private TextView topTitle;
     private TextView jaugeLeftText;
     private TextView jaugeRightText;
     private ImageButton availableButton;
@@ -42,11 +45,22 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private ImageButton addFavoriteButton;
 
     private GetDatabaseTask getDatabaseTask;
+    private GetStatusTask getStatusTask;
     private GetStationsTask getStationsTask;
     private boolean databaseReady;
 
     private List<Station> stations;
     private StationsOverlay stationsOverlay;
+
+    private Set<Long> favoritesStations;
+    private String favoritesPreferences;
+
+    private Set<Long> alertStations;
+    private String alertPreferences;
+
+    private SharedPreferences preferences;
+
+    private Station currentStation;
 
     private InfoType infoType = InfoType.AVAILABLE;
 
@@ -59,6 +73,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         topLayout = (RelativeLayout) findViewById(R.id.map_top);
         jaugeBackgroundRepeat = (ImageView) findViewById(R.id.map_top_jauge_background_repeat);
         jaugeRepeat = (ImageView) findViewById(R.id.map_top_jauge_repeat);
+        topTitle = (TextView) findViewById(R.id.map_top_title);
         jaugeLeftText = (TextView) findViewById(R.id.map_top_jauge_left_text);
         jaugeRightText = (TextView) findViewById(R.id.map_top_jauge_right_text);
         availableButton = (ImageButton) findViewById(R.id.map_bottom_available_button);
@@ -74,13 +89,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         stations = new ArrayList<Station>();
 
         startGetDatabaseTask();
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-
-        initStation();
     }
 
     @Override
@@ -110,10 +118,9 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            stationsOverlay.getOverlayItems().clear();
+                            stationsOverlay.clearOverlayItems();
                             stations.clear();
-                            mapView.invalidate();
-                            hideStation();
+                            hideCurrentStationIfShown();
                         }
                     });
 
@@ -124,7 +131,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            hideStation();
+                            hideCurrentStationIfShown();
                             startGetStationsTask();
                         }
                     });
@@ -147,6 +154,10 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                 availableButton.setImageResource(R.drawable.avail_pushed);
                 freeButton.setImageResource(R.drawable.free);
                 infoType = InfoType.AVAILABLE;
+
+                updateCurrentStationStatus(); // update top bar infos if exists
+
+                mapView.invalidate();
             }
         });
 
@@ -160,33 +171,46 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                 availableButton.setImageResource(R.drawable.avail);
                 freeButton.setImageResource(R.drawable.free_pushed);
                 infoType = InfoType.FREE;
+
+                updateCurrentStationStatus(); // update top bar infos if exists
+
+                mapView.invalidate();
             }
         });
 
         favoritesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                favoritesButton.setImageResource(R.drawable.star);
+                if (null == currentStation) {
+                    return;
+                }
+
+                if (isFavoriteStation(currentStation)) {
+                    removeFavoriteStation(currentStation);
+                    favoritesButton.setImageResource(R.drawable.star_disabled);
+                } else {
+                    addFavoriteStation(currentStation);
+                    favoritesButton.setImageResource(R.drawable.star);
+                }
             }
         });
 
         alertButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertButton.setImageResource(R.drawable.alert);
+                if (null == currentStation) {
+                    return;
+                }
+
+                if (isAlertStation(currentStation)) {
+                    removeAlertStation(currentStation);
+                    alertButton.setImageResource(R.drawable.alert_disabled);
+                } else {
+                    addAlertStation(currentStation);
+                    alertButton.setImageResource(R.drawable.alert);
+                }
             }
         });
-    }
-
-    private void initStation() {
-        Station station = new Station();
-        station.setTotal(20);
-        station.setAvailable(5);
-        station.setFree(15);
-
-        jaugeLeftText.setText(String.valueOf(station.getAvailable()));
-        jaugeRightText.setText(String.valueOf(station.getFree()));
-        jaugeRepeat.getLayoutParams().width = (jaugeBackgroundRepeat.getWidth() / station.getTotal()) * station.getAvailable();
     }
 
 
@@ -204,7 +228,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         }
 
         databaseReady = true;
-        startGetStationsTask();
+        startGetStatusTask();
     }
 
     private void stopGetDatabaseTaskIfRunning() {
@@ -215,6 +239,17 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         getDatabaseTask.cancel(true);
         getDatabaseTask.setActivity(null);
         getDatabaseTask = null;
+    }
+
+
+    /* Get status task */
+    public void startGetStatusTask() {
+        getStatusTask = new GetStatusTask(this);
+        getStatusTask.execute();
+    }
+
+    public void onGetStatusTaskFinished(boolean result) {
+        startGetStationsTask();
     }
 
 
@@ -254,21 +289,149 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         getDatabaseTask = null;
     }
 
-    @Override
-    protected boolean isRouteDisplayed() {
-        return false;
-    }
 
-    public void showStation(Station station) {
+    /* Current station */
+    public void showCurrentStation(Station station) {
+        currentStation = station;
+
         topLayout.setVisibility(View.VISIBLE);
+        updateCurrentStationStatus();
+
+        topTitle.setText(station.getName());
+        favoritesButton.setImageResource(isFavoriteStation(currentStation) ? R.drawable.star : R.drawable.star_disabled);
+        alertButton.setImageResource(isAlertStation(currentStation) ? R.drawable.alert : R.drawable.alert_disabled);
     }
 
-    public void hideStation() {
+    public void hideCurrentStationIfShown() {
+        if (null == currentStation) {
+            return;
+        }
+
+        currentStation = null;
         topLayout.setVisibility(View.GONE);
     }
 
+    private void updateCurrentStationStatus() {
+        if (null == currentStation) {
+            return;
+        }
 
-    private static enum InfoType {
+        int total = currentStation.getAvailable() + currentStation.getFree();
+
+        jaugeLeftText.setText(String.valueOf(getInfoTypeStatus(currentStation)));
+        jaugeRightText.setText(String.valueOf(total));
+        jaugeRepeat.getLayoutParams().width = (jaugeBackgroundRepeat.getWidth() / total) * getInfoTypeStatus(currentStation);
+    }
+
+
+    /* Favorites stations */
+    private void initFavoritesStationsIfNotDone() {
+        if (null != favoritesStations) {
+            return;
+        }
+
+        favoritesStations = new HashSet<Long>();
+
+        favoritesPreferences = getPreferences().getString(getString(R.string.application_preferences_favorites), "");
+        if (StringUtils.isNotEmpty(favoritesPreferences)) {
+            for (String id : StringUtils.split(favoritesPreferences, ";")) {
+                favoritesStations.add(Long.valueOf(id));
+            }
+        }
+    }
+
+    private void addFavoriteStation(Station station) {
+        initFavoritesStationsIfNotDone();
+
+        favoritesStations.add(station.getId());
+        favoritesPreferences += station.getId() + ";";
+        getPreferences().edit().putString(getString(R.string.application_preferences_favorites), favoritesPreferences).commit();
+    }
+
+    private void removeFavoriteStation(Station station) {
+        initFavoritesStationsIfNotDone();
+
+        favoritesStations.remove(station.getId());
+
+        StringBuilder builder = new StringBuilder();
+        for (Long id : favoritesStations) {
+            builder.append(id).append(";");
+        }
+
+        favoritesPreferences = builder.toString();
+
+        getPreferences().edit().putString(getString(R.string.application_preferences_favorites), favoritesPreferences).commit();
+    }
+
+    private boolean isFavoriteStation(Station station) {
+        initFavoritesStationsIfNotDone();
+        return favoritesStations.contains(station.getId());
+    }
+
+
+    /* Alert stations */
+    private void initAlertStationsIfNotDone() {
+        if (null != alertStations) {
+            return;
+        }
+
+        alertStations = new HashSet<Long>();
+
+        alertPreferences = getPreferences().getString(getString(R.string.application_preferences_alerts), "");
+        if (StringUtils.isNotEmpty(alertPreferences)) {
+            for (String id : StringUtils.split(alertPreferences, ";")) {
+                alertStations.add(Long.valueOf(id));
+            }
+        }
+    }
+
+    private void addAlertStation(Station station) {
+        initAlertStationsIfNotDone();
+
+        alertStations.add(station.getId());
+        alertPreferences += station.getId() + ";";
+        getPreferences().edit().putString(getString(R.string.application_preferences_alerts), alertPreferences).commit();
+    }
+
+    private void removeAlertStation(Station station) {
+        initAlertStationsIfNotDone();
+
+        alertStations.remove(station.getId());
+
+        StringBuilder builder = new StringBuilder();
+        for (Long id : alertStations) {
+            builder.append(id).append(";");
+        }
+
+        alertPreferences = builder.toString();
+        getPreferences().edit().putString(getString(R.string.application_preferences_alerts), alertPreferences).commit();
+    }
+
+    private boolean isAlertStation(Station station) {
+        initAlertStationsIfNotDone();
+        return alertStations.contains(station.getId());
+    }
+
+
+    private SharedPreferences getPreferences() {
+        if (null == preferences) {
+            preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        }
+
+        return preferences;
+    }
+
+
+    public int getInfoTypeStatus(Station station) {
+        return (infoType == InfoType.AVAILABLE) ? station.getAvailable() : station.getFree();
+    }
+
+    public static enum InfoType {
         AVAILABLE, FREE
+    }
+
+    @Override
+    protected boolean isRouteDisplayed() {
+        return false;
     }
 }

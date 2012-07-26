@@ -24,15 +24,15 @@ public class StationDao extends AbstractDao<Station, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Remote_id = new Property(1, Integer.class, "remote_id", false, "REMOTE_ID");
-        public final static Property Name = new Property(2, String.class, "name", false, "NAME");
-        public final static Property Address = new Property(3, String.class, "address", false, "ADDRESS");
-        public final static Property City = new Property(4, String.class, "city", false, "CITY");
+        public final static Property Remote_id = new Property(1, Integer.class, "remote_id", false, "remote_id");
+        public final static Property Name = new Property(2, String.class, "name", false, "name");
+        public final static Property Address = new Property(3, String.class, "address", false, "address");
+        public final static Property City = new Property(4, String.class, "city", false, "city");
         public final static Property Latitude = new Property(5, Double.class, "latitude", false, "lat");
         public final static Property Longitude = new Property(6, Double.class, "longitude", false, "long");
-        public final static Property Total = new Property(7, Integer.class, "total", false, "TOTAL");
-        public final static Property Free = new Property(8, Integer.class, "free", false, "FREE");
-        public final static Property Available = new Property(9, Integer.class, "available", false, "AVAILABLE");
+        public final static Property Total = new Property(7, Integer.class, "total", false, "total");
+        public final static Property Free = new Property(8, Integer.class, "free", false, "free");
+        public final static Property Available = new Property(9, Integer.class, "available", false, "available");
         public final static Property Datetime = new Property(10, java.util.Date.class, "datetime", false, "datetime");
         public final static Property Open = new Property(11, Boolean.class, "open", false, "open");
         public final static Property Bonus = new Property(12, Boolean.class, "bonus", false, "bonus");
@@ -52,15 +52,15 @@ public class StationDao extends AbstractDao<Station, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'stations' (" + //
                 "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'REMOTE_ID' INTEGER," + // 1: remote_id
-                "'NAME' TEXT," + // 2: name
-                "'ADDRESS' TEXT," + // 3: address
-                "'CITY' TEXT," + // 4: city
+                "'remote_id' INTEGER," + // 1: remote_id
+                "'name' TEXT," + // 2: name
+                "'address' TEXT," + // 3: address
+                "'city' TEXT," + // 4: city
                 "'lat' REAL," + // 5: latitude
                 "'long' REAL," + // 6: longitude
-                "'TOTAL' INTEGER," + // 7: total
-                "'FREE' INTEGER," + // 8: free
-                "'AVAILABLE' INTEGER," + // 9: available
+                "'total' INTEGER," + // 7: total
+                "'free' INTEGER," + // 8: free
+                "'available' INTEGER," + // 9: available
                 "'datetime' INTEGER," + // 10: datetime
                 "'open' INTEGER," + // 11: open
                 "'bonus' INTEGER);"); // 12: bonus
