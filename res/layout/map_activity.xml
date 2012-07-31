@@ -7,7 +7,6 @@
     <com.siu.bicyclette.map.RoundedMapView android:id="@+id/map"
                                            android:layout_width="fill_parent" android:layout_height="fill_parent"/>
 
-
     <RelativeLayout android:id="@+id/map_top"
                     android:layout_width="fill_parent" android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/map"
@@ -69,6 +68,7 @@
                       android:textColor="@android:color/white"/>
         </RelativeLayout>
 
+        <!-- Title -->
         <TextView android:id="@+id/map_top_title"
                   android:layout_width="fill_parent" android:layout_height="wrap_content"
                   android:layout_toRightOf="@id/map_top_jauge_left"
@@ -81,6 +81,7 @@
                   android:textStyle="bold"
                   android:text="Title"/>
 
+        <!-- Jauge -->
         <ImageView android:id="@+id/map_top_jauge_background_repeat"
                    android:layout_width="wrap_content" android:layout_height="wrap_content"
                    android:layout_toRightOf="@id/map_top_jauge_left"

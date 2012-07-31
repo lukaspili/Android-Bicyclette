@@ -1,5 +1,6 @@
 package com.siu.bicyclette.activity;
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,6 +19,7 @@ import com.siu.bicyclette.task.GetStationsTask;
 import com.siu.bicyclette.task.GetStatusTask;
 import org.apache.commons.lang3.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -81,7 +83,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         locateButton = (ImageButton) findViewById(R.id.map_bottom_location_button);
         favoritesButton = (ImageButton) findViewById(R.id.map_bottom_favorites_button);
         alertButton = (ImageButton) findViewById(R.id.map_top_alert);
-        favoritesButton = (ImageButton) findViewById(R.id.map_top_favorite);
+        addFavoriteButton = (ImageButton) findViewById(R.id.map_top_favorite);
 
         initMap();
         initButtons();
@@ -94,11 +96,22 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         if (isFinishing()) {
             stopGetDatabaseTaskIfRunning();
             stopGetStationsTaskIfRunning();
         }
+    }
 
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        return new FavoritesDialog(this);
+    }
+
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+        initFavoritesStationsIfNotDone();
+        ((FavoritesDialog) dialog).start(favoritesStations);
     }
 
     private void initMap() {
@@ -178,7 +191,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
             }
         });
 
-        favoritesButton.setOnClickListener(new View.OnClickListener() {
+        addFavoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (null == currentStation) {
@@ -187,10 +200,10 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
                 if (isFavoriteStation(currentStation)) {
                     removeFavoriteStation(currentStation);
-                    favoritesButton.setImageResource(R.drawable.star_disabled);
+                    addFavoriteButton.setImageResource(R.drawable.star_disabled);
                 } else {
                     addFavoriteStation(currentStation);
-                    favoritesButton.setImageResource(R.drawable.star);
+                    addFavoriteButton.setImageResource(R.drawable.star);
                 }
             }
         });
@@ -209,6 +222,15 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                     addAlertStation(currentStation);
                     alertButton.setImageResource(R.drawable.alert);
                 }
+            }
+        });
+
+        favoritesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideCurrentStationIfShown();
+                mapView.removeAllViewsInLayout();
+                showDialog(1);
             }
         });
     }
@@ -298,7 +320,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         updateCurrentStationStatus();
 
         topTitle.setText(station.getName());
-        favoritesButton.setImageResource(isFavoriteStation(currentStation) ? R.drawable.star : R.drawable.star_disabled);
+        addFavoriteButton.setImageResource(isFavoriteStation(currentStation) ? R.drawable.star : R.drawable.star_disabled);
         alertButton.setImageResource(isAlertStation(currentStation) ? R.drawable.alert : R.drawable.alert_disabled);
     }
 
@@ -320,7 +342,9 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
         jaugeLeftText.setText(String.valueOf(getInfoTypeStatus(currentStation)));
         jaugeRightText.setText(String.valueOf(total));
-        jaugeRepeat.getLayoutParams().width = (jaugeBackgroundRepeat.getWidth() / total) * getInfoTypeStatus(currentStation);
+
+        double width = (new Double(jaugeBackgroundRepeat.getWidth()) / new Double(total)) * getInfoTypeStatus(currentStation);
+        jaugeRepeat.getLayoutParams().width = (int) width;
     }
 
 
@@ -433,5 +457,9 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     @Override
     protected boolean isRouteDisplayed() {
         return false;
+    }
+
+    public Set<Long> getFavoritesStations() {
+        return favoritesStations;
     }
 }

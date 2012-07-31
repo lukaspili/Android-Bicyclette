@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:paddingTop="5dip" android:paddingBottom="5dip"
+                android:background="@android:color/white">
+
+    <ImageButton android:id="@+id/station_row_delete"
+                 android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:layout_marginLeft="5dip" android:layout_marginRight="10dip"
+                 android:layout_alignParentRight="true"
+                 android:layout_centerVertical="true"
+                 android:src="@drawable/delete"
+                 android:visibility="gone"
+                 android:onClick=""
+                 android:background="@android:color/transparent"/>
+
+    <RelativeLayout android:id="@+id/station_row_left"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:paddingTop="13dip" android:paddingLeft="6dip">
+
+        <ImageView android:id="@+id/station_row_left_image"
+                   android:layout_width="wrap_content" android:layout_height="wrap_content"
+                   android:src="@drawable/jauge_left_green"/>
+
+        <TextView android:id="@+id/station_row_left_text"
+                  android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:layout_centerInParent="true"
+                  android:paddingTop="10dip" android:paddingLeft="5dip"
+                  android:text="1"
+                  android:textStyle="bold"
+                  android:textSize="17sp"
+                  android:textColor="@android:color/white"/>
+    </RelativeLayout>
+
+    <RelativeLayout android:id="@+id/station_row_right"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingTop="13dip" android:paddingRight="5dip">
+
+        <ImageView android:id="@+id/station_row_right_image"
+                   android:layout_width="wrap_content" android:layout_height="wrap_content"
+                   android:src="@drawable/jauge_right_free"/>
+
+        <TextView android:id="@+id/station_row_right_text"
+                  android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:layout_centerInParent="true"
+                  android:paddingTop="10dip" android:paddingRight="5dip"
+                  android:text="10"
+                  android:textStyle="bold"
+                  android:textSize="17sp"
+                  android:textColor="@android:color/white"/>
+    </RelativeLayout>
+
+    <TextView android:id="@+id/station_row_title"
+              android:layout_width="fill_parent" android:layout_height="wrap_content"
+              android:layout_toRightOf="@id/station_row_left"
+              android:layout_toLeftOf="@id/station_row_right"
+              android:layout_marginTop="7dip"
+              android:paddingLeft="2dip" android:paddingRight="2dip"
+              android:gravity="center"
+              android:textSize="16sp"
+              android:singleLine="true"
+              android:ellipsize="marquee"
+              android:textStyle="bold"
+              android:textColor="@android:color/black"
+              android:text="Title"/>
+
+    <ImageView android:id="@+id/station_row_jauge_background_repeat"
+               android:layout_width="wrap_content" android:layout_height="wrap_content"
+               android:layout_toRightOf="@id/station_row_left"
+               android:layout_toLeftOf="@id/station_row_right"
+               android:layout_marginTop="13dip"
+               android:background="@drawable/repeatable_jauge_background"/>
+
+    <ImageView android:id="@+id/station_row_jauge_repeat"
+               android:layout_width="20dip" android:layout_height="wrap_content"
+               android:layout_toRightOf="@id/station_row_left"
+               android:layout_marginTop="13dip"
+               android:background="@drawable/jauge_background_green_repeatable"/>
+
+
+</RelativeLayout>
