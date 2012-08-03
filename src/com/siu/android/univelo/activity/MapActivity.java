@@ -443,7 +443,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                 Log.d(getClass().getName(), "Update station handler");
                 startGetStatusTask();
 
-                updateStationHandler.postDelayed(this, 1000 * 30);
+                updateStationHandler.postDelayed(this, AppConstants.STATION_UPDATE_HANDLER_INTERVAL_MS);
             }
         };
 
