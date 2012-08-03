@@ -27,7 +27,7 @@ public class GetStationsByIdsTask extends AsyncTask<Void, Void, List<Station>> {
 
     @Override
     protected List<Station> doInBackground(Void... voids) {
-        Log.d(getClass().getName(), "GetStationsByIdsTask");
+        Log.d(getClass().getName(), "GetStationsByIdsTask for " + type);
 
         return DatabaseHelper.getInstance().getDaoSession().getStationDao().queryBuilder()
                 .where(StationDao.Properties.Id.in(ids))

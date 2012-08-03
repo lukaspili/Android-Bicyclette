@@ -149,6 +149,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
         initFavoritesStationsIfNotDone();
+        initAlertStationsIfNotDone();
         ((FavoritesDialog) dialog).start(favoritesStations, alertStations);
     }
 
@@ -507,6 +508,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
         if (null != currentStation) {
             if (stations.contains(currentStation)) {
+                updateCurrentStationStatus();
                 stationsOverlay.setStationSelectedAlpha(currentStation);
             } else {
                 hideCurrentStationIfShown();
@@ -525,7 +527,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     }
 
 
-    /* Current station */
+    /* #Current station */
     public void showCurrentStation(Station station) {
         currentStation = station;
 
