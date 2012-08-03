@@ -1,4 +1,4 @@
 <resources>
-    <string name="webservice_status_url">http://bicyclette.indri.fr/api?c=%1$s</string>
+    <string name="webservice_status_url">http://bicyclette.indri.fr/api?json&amp;c=%1$s</string>
     <integer name="webservice_status_size">5200</integer>
 </resources>

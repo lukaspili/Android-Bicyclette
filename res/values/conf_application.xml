@@ -1,5 +1,5 @@
 <resources>
-    <bool name="application_debug">true</bool>
+    <bool name="application_debug">false</bool>
 
     <integer name="application_database_creation_default_timestamp">1342944758</integer>
     <string name="application_preferences_database_creation_timestamp">database_timestamp</string>

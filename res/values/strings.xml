@@ -8,9 +8,13 @@
     <string name="search_label">Search label</string>
     <string name="search_hint">Search hint</string>
 
-    <string name="favorites_dialog_title">Favoris</string>
-    <string name="favorites_dialog_loading">Chargement des favoris...</string>
-    <string name="favorites_dialog_empty">Vous n\'avez pas de stations favorites.</string>
+    <string name="favorites_dialog_title_favs">Favoris</string>
+    <string name="favorites_dialog_title_alerts">Alertes</string>
+    <string name="favorites_dialog_title_full">Favoris &amp; Alertes</string>
+    <string name="favorites_dialog_loading_favs">Chargement des favoris...</string>
+    <string name="favorites_dialog_loading_alerts">Chargement des alertes...</string>
+    <string name="favorites_dialog_empty_favs">Vous n\'avez pas de stations favorites.</string>
+    <string name="favorites_dialog_empty_alerts">Vous n\'avez pas d\'alertes activées.</string>
     <string name="favorites_dialog_bar_left">Vélos disponibles</string>
     <string name="favorites_dialog_bar_right">Places libres</string>
 </resources>

@@ -4,4 +4,8 @@
 
     <!-- prod -->
     <!--<string name="googlemap_key">09LFyGLHkTQmTw9G3rHMkhqU0K1NFehLbQZPODQ</string>-->
+
+    <!-- gcm -->
+    <string name="googleapi_gcm_key">AIzaSyC1V2kQBtGQ6N3lVo0Sz6FTKfgTBTBB-Hw</string>
+
 </resources>
