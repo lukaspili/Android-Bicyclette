@@ -7,6 +7,10 @@
     <com.siu.android.univelo.map.RoundedMapView android:id="@+id/map"
                                                 android:layout_width="fill_parent" android:layout_height="fill_parent"/>
 
+    <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+               android:layout_marginLeft="10dip" android:layout_marginTop="10dip"
+               android:src="@drawable/google"/>
+
     <RelativeLayout android:id="@+id/map_top"
                     android:layout_width="fill_parent" android:layout_height="wrap_content"
                     android:layout_alignLeft="@id/map"
@@ -89,12 +93,22 @@
                    android:layout_marginTop="13dip"
                    android:background="@drawable/repeatable_jauge_background"/>
 
+        <!--<ProgressBar android:id="@+id/map_top_jauge_progress"-->
+                     <!--android:layout_width="wrap_content" android:layout_height="wrap_content"-->
+                     <!--android:layout_toRightOf="@id/map_top_jauge_left"-->
+                     <!--android:layout_marginTop="13dip"-->
+                     <!--android:animationResolution="100"-->
+                     <!--android:indeterminate="false"-->
+                     <!--android:max="100"-->
+                     <!--android:progressDrawable="@drawable/jauge_background_green_repeatable"/>-->
+
         <ImageView android:id="@+id/map_top_jauge_repeat"
                    android:layout_width="120dip" android:layout_height="wrap_content"
                    android:layout_toRightOf="@id/map_top_jauge_left"
                    android:layout_marginTop="13dip"
                    android:background="@drawable/jauge_background_green_repeatable"/>
 
+        <!-- Top right buttons -->
         <ImageButton android:id="@+id/map_top_alert"
                      android:layout_width="wrap_content" android:layout_height="wrap_content"
                      android:layout_alignLeft="@id/map_top_right"
@@ -130,14 +144,14 @@
                  android:layout_width="wrap_content" android:layout_height="wrap_content"
                  android:layout_alignLeft="@id/map"
                  android:layout_alignBottom="@id/map"
-                 android:src="@drawable/locate"
+                 android:src="@drawable/locate_selector"
                  android:background="@android:color/transparent"/>
 
     <ImageButton android:id="@+id/map_bottom_favorites_button"
                  android:layout_width="wrap_content" android:layout_height="wrap_content"
                  android:layout_alignBottom="@id/map"
                  android:layout_toRightOf="@id/map_bottom_location_button"
-                 android:src="@drawable/favorites"
+                 android:src="@drawable/favorites_selector"
                  android:background="@android:color/transparent"/>
 
     <!--<LinearLayout android:id="@+id/map_controllers"-->

@@ -19,7 +19,6 @@ public class StationViewHolder extends SimpleViewHolder {
     ImageView jauge;
     ImageView jaugeBackground;
     ImageButton delete;
-    RelativeLayout bar;
 
     @Override
     public void init() {
@@ -29,7 +28,6 @@ public class StationViewHolder extends SimpleViewHolder {
         jauge = (ImageView) row.findViewById(R.id.station_row_jauge_repeat);
         jaugeBackground = (ImageView) row.findViewById(R.id.station_row_jauge_background_repeat);
         delete = (ImageButton) row.findViewById(R.id.station_row_delete);
-        bar = (RelativeLayout) row.findViewById(R.id.station_row_bar);
     }
 
     public View getRow() {

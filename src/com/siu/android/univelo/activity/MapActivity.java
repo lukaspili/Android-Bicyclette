@@ -4,11 +4,14 @@ import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.*;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.android.maps.GeoPoint;
@@ -52,6 +55,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private ImageButton favoritesButton;
     private ImageButton alertButton;
     private ImageButton addFavoriteButton;
+    private ProgressBar jaugeProgressBar;
 
     private Handler updateStationHandler;
     private Runnable updateStationRunnable;
@@ -80,7 +84,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
     private Station currentStation;
 
-    private InfoType infoType = InfoType.AVAILABLE;
+    private StationInfo infoType = StationInfo.AVAILABLE;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -161,11 +165,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         mapView.setOnChangeListener(new EnhancedMapView.OnChangeListener() {
             @Override
             public void onChange(EnhancedMapView view, GeoPoint newCenter, GeoPoint oldCenter, int newZoom, int oldZoom) {
-                if (!databaseReady) {
-                    Log.d(getClass().getName(), "Map changed but database not ready yet, exit");
-                    return;
-                }
-
                 if (newZoom <= ZOOM_LIMIT) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -213,13 +212,13 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         availableButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (infoType == InfoType.AVAILABLE) {
+                if (infoType == StationInfo.AVAILABLE) {
                     return;
                 }
 
                 availableButton.setImageResource(R.drawable.avail_pushed);
                 freeButton.setImageResource(R.drawable.free);
-                infoType = InfoType.AVAILABLE;
+                infoType = StationInfo.AVAILABLE;
 
                 updateCurrentStationStatus(); // update top bar infos if exists
 
@@ -236,13 +235,13 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         freeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (infoType == InfoType.FREE) {
+                if (infoType == StationInfo.FREE) {
                     return;
                 }
 
                 availableButton.setImageResource(R.drawable.avail);
                 freeButton.setImageResource(R.drawable.free_pushed);
-                infoType = InfoType.FREE;
+                infoType = StationInfo.FREE;
 
                 updateCurrentStationStatus(); // update top bar infos if exists
 
@@ -457,6 +456,11 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     }
 
     public void startGetStatusTask() {
+        if (!databaseReady) {
+            Log.d(getClass().getName(), "Database not ready yet, exit");
+            return;
+        }
+
         stopGetStatusTaskIfRunning();
 
         getStatusTask = new GetStatusTask(this);
@@ -481,6 +485,11 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
     /* Get stations task */
     public void startGetStationsTask() {
+        if (!databaseReady) {
+            Log.d(getClass().getName(), "Database not ready yet, exit");
+            return;
+        }
+
         stopGetStationsTaskIfRunning();
 
         GeoPoint bottomLeftGeoPoint = mapView.getProjection().fromPixels(0, mapView.getHeight() - 1);
@@ -529,9 +538,34 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
     /* #Current station */
     public void showCurrentStation(Station station) {
+        // no other station is currently shown, animate the top bar
+        if (null == currentStation) {
+            TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, -topLayout.getHeight(), 0);
+            translateAnimation.setDuration(AppConstants.ANIMATION_TOPBAR_DURATION_MS);
+            translateAnimation.setFillAfter(true);
+            translateAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    // if first time, make top visible
+                    if (topLayout.getVisibility() != View.VISIBLE) {
+                        topLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            topLayout.startAnimation(translateAnimation);
+        }
+
         currentStation = station;
 
-        topLayout.setVisibility(View.VISIBLE);
         updateCurrentStationStatus();
 
         topTitle.setText(station.getName());
@@ -545,7 +579,11 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         }
 
         currentStation = null;
-        topLayout.setVisibility(View.GONE);
+
+        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, 0, -topLayout.getHeight());
+        translateAnimation.setDuration(AppConstants.ANIMATION_TOPBAR_DURATION_MS);
+        translateAnimation.setFillAfter(true);
+        topLayout.startAnimation(translateAnimation);
     }
 
     private void updateCurrentStationStatus() {
@@ -553,13 +591,37 @@ public class MapActivity extends com.google.android.maps.MapActivity {
             return;
         }
 
-        int total = currentStation.getAvailable() + currentStation.getFree();
+        final int left = getStationInfo(currentStation);
+        int right = getOppositeStationInfo(currentStation);
 
-        jaugeLeftText.setText(String.valueOf(getInfoTypeStatus(currentStation)));
-        jaugeRightText.setText(String.valueOf(total));
+        jaugeLeftText.setText(String.valueOf(left));
+        jaugeRightText.setText(String.valueOf(right));
 
-        double width = (new Double(jaugeBackgroundRepeat.getWidth()) / new Double(total)) * getInfoTypeStatus(currentStation);
+        double width = (new Double(jaugeBackgroundRepeat.getWidth()) / new Double(left + right)) * left;
         jaugeRepeat.getLayoutParams().width = (int) width;
+
+//        final double unit = width / new Double(100);
+//
+//        AsyncTask<Void, Integer, Void> task = new AsyncTask<Void, Integer, Void>() {
+//            @Override
+//            protected Void doInBackground(Void... voids) {
+//                for (int i = 1; i <= 100; i++) {
+//                    publishProgress();
+//                    try {
+//                        Thread.sleep(10);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                return null;
+//            }
+//
+//            @Override
+//            protected void onProgressUpdate(Integer... ints) {
+//                jaugeRepeat.getLayoutParams().width = (int) (unit * ints[0]);
+//            }
+//        };
+//        task.execute();
     }
 
     public void showStationFromDialog(Station station) {
@@ -641,6 +703,8 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         alertStations.add(station.getId());
         alertPreferences += station.getId() + ";";
         getPreferences().edit().putString(getString(R.string.application_preferences_alerts), alertPreferences).commit();
+
+
     }
 
     private void removeAlertStation(Station station) {
@@ -672,12 +736,16 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     }
 
 
-    public int getInfoTypeStatus(Station station) {
-        return (infoType == InfoType.AVAILABLE) ? station.getAvailable() : station.getFree();
+    public int getStationInfo(Station station) {
+        return (infoType == StationInfo.AVAILABLE) ? station.getAvailable() : station.getFree();
+    }
+
+    public int getOppositeStationInfo(Station station) {
+        return (infoType == StationInfo.AVAILABLE) ? station.getFree() : station.getAvailable();
     }
 
 
-    public static enum InfoType {
+    public static enum StationInfo {
         AVAILABLE, FREE
     }
 

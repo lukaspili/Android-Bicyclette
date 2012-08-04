@@ -1,8 +1,11 @@
 package com.siu.android.univelo.adapter;
 
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import com.siu.android.andutils.adapter.SimpleAdapter;
 import com.siu.android.bicyclette.Station;
 import com.siu.android.univelo.activity.FavoritesDialog;
@@ -16,7 +19,7 @@ import java.util.List;
 public class StationAdapter extends SimpleAdapter<Station, StationViewHolder> {
 
     private FavoritesDialog dialog;
-    private List<Long> ids = new ArrayList<Long>();
+//    private List<Long> ids = new ArrayList<Long>();
 
     public StationAdapter(FavoritesDialog dialog, int rowLayoutId, List<Station> stations) {
         super(dialog.getContext(), rowLayoutId, stations);
@@ -63,36 +66,103 @@ public class StationAdapter extends SimpleAdapter<Station, StationViewHolder> {
             }
         });
 
-//        viewHolder.getRow().setOnTouchListener(new View.OnTouchListener() {
-//            private int padding = 0;
-//            private int initialx = 0;
-//            private int currentx = 0;
-//
-//            //            private  ViewHolder viewHolder;
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    padding = 0;
-//                    initialx = (int) event.getX();
-//                    currentx = (int) event.getX();
-////                    viewHolder = ((ViewHolder) v.getTag());
-//                }
-//                if (event.getAction() == MotionEvent.ACTION_MOVE) {
-//                    currentx = (int) event.getX();
-//                    padding = currentx - initialx;
-//                }
-//
-//                if (event.getAction() == MotionEvent.ACTION_UP ||
-//                        event.getAction() == MotionEvent.ACTION_CANCEL) {
-//                    padding = 0;
-//                    initialx = 0;
-//                    currentx = 0;
-//                }
-//
-//                Log.d(getClass().getName(), "Gesture padding = " + padding);
-//                v.setPadding(padding, 0, 0, 0);
-//                return false;
-//            }
-//        });
+        viewHolder.delete.setVisibility(View.INVISIBLE);
+        viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.getActivity().getFavoritesStations().remove(station.getId());
+                viewHolder.getRow().setVisibility(View.GONE);
+            }
+        });
+
+        viewHolder.getRow().setOnTouchListener(new View.OnTouchListener() {
+            private boolean moved;
+            private boolean animating;
+            private int movement = 0;
+            private int initialx = 0;
+            private int currentx = 0;
+
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    movement = 0;
+                    initialx = (int) event.getX();
+                    currentx = (int) event.getX();
+                }
+
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                    currentx = (int) event.getX();
+                    movement = currentx - initialx;
+
+                    // reccord the movement action to test if next is movement stop and not a click
+                    moved = true;
+                }
+
+                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+                    movement = 0;
+                    initialx = 0;
+                    currentx = 0;
+                }
+
+                if (!animating) {
+                    if (movement < 0 && viewHolder.delete.getVisibility() == View.INVISIBLE) {
+                        AlphaAnimation alphaAnimation = new AlphaAnimation(0, 255);
+                        alphaAnimation.setDuration(1000);
+                        alphaAnimation.setFillAfter(true);
+                        alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                                animating = true;
+                                viewHolder.delete.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                animating = false;
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+                            }
+                        });
+
+                        viewHolder.delete.startAnimation(alphaAnimation);
+
+                    } else if (movement > 0 && viewHolder.delete.getVisibility() == View.VISIBLE) {
+                        AlphaAnimation alphaAnimation = new AlphaAnimation(0.0f, 1.0f);
+                        alphaAnimation.setDuration(1000);
+                        alphaAnimation.setFillAfter(true);
+                        alphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                                animating = true;
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                viewHolder.delete.setVisibility(View.INVISIBLE);
+                                animating = false;
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+                            }
+                        });
+
+                        viewHolder.delete.startAnimation(alphaAnimation);
+                    }
+                }
+
+                Log.d(getClass().getName(), "Movement = " + movement);
+
+                if (moved && movement == 0) {
+                    moved = false;
+                    return true;
+                }
+
+                return false;
+            }
+
+        });
 
         viewHolder.title.setText(station.getName());
         viewHolder.leftText.setText(String.valueOf(station.getAvailable()));

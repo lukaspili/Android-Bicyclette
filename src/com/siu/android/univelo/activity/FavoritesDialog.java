@@ -43,6 +43,8 @@ public class FavoritesDialog extends Dialog {
 
         favsList = (ListView) findViewById(R.id.favorites_dialog_list_fav);
         favsList.setItemsCanFocus(true);
+        favsList.setAnimationCacheEnabled(false);
+        favsList.setDrawingCacheEnabled(false);
         favsAdapter = new StationAdapter(this, R.layout.station_row, favsStations);
         favsList.setAdapter(favsAdapter);
 

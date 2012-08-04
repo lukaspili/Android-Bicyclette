@@ -1,6 +1,7 @@
 package com.siu.android.univelo.map;
 
 import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import com.google.android.maps.GeoPoint;
@@ -59,7 +60,7 @@ public class StationsOverlay extends ItemizedOverlay<StationOverlayItem> {
         Resources resources = Application.getContext().getResources();
 
         for (Station station : stations) {
-            String id = "pin_" + activity.getInfoTypeStatus(station);
+            String id = "pin_" + activity.getStationInfo(station);
 
             Drawable drawable;
             try {
@@ -79,7 +80,7 @@ public class StationsOverlay extends ItemizedOverlay<StationOverlayItem> {
         Resources resources = Application.getContext().getResources();
 
         for (StationOverlayItem item : overlayItems) {
-            Drawable drawable = resources.getDrawable(resources.getIdentifier("pin_" + activity.getInfoTypeStatus(item.getStation()), "drawable", activity.getPackageName()));
+            Drawable drawable = resources.getDrawable(resources.getIdentifier("pin_" + activity.getStationInfo(item.getStation()), "drawable", activity.getPackageName()));
             item.setDrawable(drawable);
         }
     }
@@ -119,6 +120,7 @@ public class StationsOverlay extends ItemizedOverlay<StationOverlayItem> {
             if (item.getStation().getId().equals(station.getId())) {
                 item.getDrawable().mutate().setAlpha(ALPHA_OPAQUE);
             } else {
+
                 item.getDrawable().mutate().setAlpha(ALPHA_TRANSPARENT);
             }
         }
@@ -147,6 +149,11 @@ public class StationsOverlay extends ItemizedOverlay<StationOverlayItem> {
         }
     }
 
+    @Override
+    public void draw(android.graphics.Canvas canvas, MapView mapView, boolean shadow) {
+        super.draw(canvas, mapView, false);
+    }
+
 //    @Override
 //    public void draw(android.graphics.Canvas canvas, MapView mapView, boolean shadow) {
 //        super.draw(canvas, mapView, false);
@@ -155,7 +162,7 @@ public class StationsOverlay extends ItemizedOverlay<StationOverlayItem> {
 //        // go through all OverlayItems and draw title for each of them
 //        for (StationOverlayItem item : overlayItems) {
 //
-//            String label = String.valueOf(activity.getInfoTypeStatus(item.getStation()));
+//            String label = String.valueOf(activity.etInfoTypeStatus(item.getStation()));
 //
 //            /* Converts latitude & longitude of this overlay item to coordinates on screen.
 //             * As we have called boundCenterBottom() in constructor, so these coordinates

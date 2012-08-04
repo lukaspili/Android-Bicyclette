@@ -31,7 +31,7 @@ public class GcmUtils {
             Log.d(GcmUtils.class.getName(), "Attempt #" + i + " to register");
 
             if (!HttpUtils.post(AppConstants.GCM_SERVER_URL, AppConstants.GCM_SERVER_URL_PARAM_REGID, registrationId)) {
-                Log.e(GcmUtils.class.getName(), "Failed to register on attempt " + i);
+                Log.d(GcmUtils.class.getName(), "Failed to register on attempt " + i);
 
                 if (i == MAX_ATTEMPTS || (null != registerChecker && !registerChecker.shouldContinue())) {
                     break;

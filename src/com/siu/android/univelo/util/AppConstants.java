@@ -25,4 +25,7 @@ public class AppConstants {
 
     /* Station update */
     public static final int STATION_UPDATE_HANDLER_INTERVAL_MS = 1000 * 30;
+
+    /* Animations */
+    public static final int ANIMATION_TOPBAR_DURATION_MS = 900;
 }
